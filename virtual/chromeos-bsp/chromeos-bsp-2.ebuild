@@ -17,6 +17,7 @@ RDEPEND="
 "
 DEPEND="
 	${RDEPEND}
+	chromeos-base/auto-expand-partition
 	chromeos-base/flintos-arch-spec
 	chromeos-base/flintos-chip-spec
 	chromeos-base/flintos-board-spec
