@@ -11,7 +11,7 @@ IUSE=""
 
 DEPEND=""
 RDEPEND="${DEPEND}
-	sys-apps/gptfdisk
+	sys-apps/gptfdisk[-ncurses]
 "
 
 S=${WORKDIR}
