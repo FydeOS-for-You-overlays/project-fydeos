@@ -14,11 +14,11 @@ IUSE=""
 RDEPEND="
 	!chromeos-base/chromeos-bsp-null
 	sys-kernel/linux-firmware
+	chromeos-base/flintos-arch-spec
+    chromeos-base/flintos-chip-spec
+    chromeos-base/flintos-board-spec
+    chromeos-base/flintos-variant-spec
 "
 DEPEND="
 	${RDEPEND}
-	chromeos-base/flintos-arch-spec
-	chromeos-base/flintos-chip-spec
-	chromeos-base/flintos-board-spec
-	chromeos-base/flintos-variant-spec
 "
