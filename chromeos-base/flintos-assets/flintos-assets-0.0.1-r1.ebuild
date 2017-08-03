@@ -29,4 +29,7 @@ src_install() {
 
 	insinto /usr/share/chromeos-assets/screensavers
 	doins -r "${FILESDIR}"/screensavers/*
+	
+	insinto /usr/share/chromeos-assets/wallpaper
+	doins -r "${FILESDIR}"/wallpaper/*
 }
