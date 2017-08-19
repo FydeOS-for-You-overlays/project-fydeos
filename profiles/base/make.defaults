@@ -1,0 +1,3 @@
+USE_EXPAND="${USE_EXPAND} FLINTOS_EDITIONS"
+
+FLINTOS_EDITIONS="vanilla dev_china dev_intl"
