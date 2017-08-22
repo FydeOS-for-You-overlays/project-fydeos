@@ -95,6 +95,17 @@ src_configure() {
 	use ssl || myconf+=( --without-ssl )
 	use debug && myconf+=( --debug )
 
+	# In Gentoo convention ABI and LIBDIR_arm should be defined in the make.defaults file
+	# of the board overlay profile, so this ebuild could correctly find right CPU arch
+	# and lib dir name (i.e. /usr/lib vs. /usr/lib64) for overlay-tinker.
+	# However, the chromeos-chrome package failed to build once ABI is defined. The
+	# symptom is incorrect include path been used thus causing some compilation errors
+	# related to dbus. Unless this problem is resolved we have to define them here to avoid
+	# interfering chromeos-chrome ebuild.
+	# The -z test makes sure it does not interfer with other ARCH.
+	[ -z ${ABI} ] && export ABI=${ARCH}
+	[ -z ${LIBDIR_arm} ] && export LIBDIR_arm="lib"
+
 	case ${ABI} in
 		amd64) myarch="x64";;
 		arm) myarch="arm";;
