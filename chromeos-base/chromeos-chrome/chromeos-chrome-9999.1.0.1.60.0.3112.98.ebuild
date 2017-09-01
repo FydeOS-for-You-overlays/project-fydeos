@@ -499,7 +499,32 @@ sandboxless_ensure_directory() {
 	done
 }
 
+IUSE+="
+	flintos_editions_vanilla
+	flintos_editions_dev_china
+	flintos_editions_dev_intl
+	flintos_editions_uk_customer
+"
+REQUIRED_USE+="
+	flintos_editions_vanilla?   ( !chrome_media )
+	flintos_editions_dev_china? ( chrome_media )
+	flintos_editions_dev_intl?  ( chrome_media )
+	flintos_editions_uk_customer?  ( chrome_media )
+"
+
 checkout_local_source() {
+	# Below environment variables can be set to control the logic of this function
+	# SKIP_SYNC
+	#     if set with any value, build from existing source directly without fetching from server at all.
+	# VER_TO_BUILD
+	#     if set with an valid tag/branch/commit ID in the git repo, checkout an build that version.
+	#     This takes precedence over the FLINTOS_EDITIONS use flag
+
+	if [[ -n ${SKIP_SYNC} ]]; then
+		elog "SKIP_SYNC is set, build from local source in ${CHROME_ROOT} directory without fetching from server."
+		return
+	fi
+
 	# Digest version information from ebuild PN.
 	local ver_arry=(${PV//./ })
 	local FLINTOS_VERSION=${ver_arry[1]}.${ver_arry[2]}.${ver_arry[3]}
@@ -507,9 +532,14 @@ checkout_local_source() {
 
 	# This allows overriding VER_TO_BUILD from env. var
 	local VER_OVERRIDE=" (Overridden from environment)"
-	if [ -z ${VER_TO_BUILD} ]; then
-		local VER_TO_BUILD=${FLINTOS_VERSION}_${CR_VERSION}
-		local VER_OVERRIDE=""
+	if [[ -z ${VER_TO_BUILD} ]]; then
+		if use flintos_editions_vanilla; then
+			local VER_TO_BUILD=${CR_VERSION}
+			VER_OVERRIDE=" (Vanilla Edition)"
+		else
+			local VER_TO_BUILD=${FLINTOS_VERSION}_${CR_VERSION}
+			VER_OVERRIDE=""
+		fi
 	fi
 
 	elog "Version Informatin:
