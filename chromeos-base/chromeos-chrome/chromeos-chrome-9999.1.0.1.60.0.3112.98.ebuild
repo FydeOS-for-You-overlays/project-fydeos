@@ -503,11 +503,13 @@ IUSE+="
 	flintos_editions_vanilla
 	flintos_editions_dev_china
 	flintos_editions_dev_intl
+	flintos_editions_uk_customer
 "
 REQUIRED_USE+="
 	flintos_editions_vanilla?   ( !chrome_media )
 	flintos_editions_dev_china? ( chrome_media )
 	flintos_editions_dev_intl?  ( chrome_media )
+	flintos_editions_uk_customer?  ( chrome_media )
 "
 
 checkout_local_source() {
