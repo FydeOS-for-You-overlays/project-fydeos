@@ -23,6 +23,7 @@ RDEPEND="
 		net-misc/flint-server
 		net-proxy/shadowsocks-libev
 	)
+	chromeos-base/flintos-release
 "
 DEPEND="
 	${RDEPEND}
