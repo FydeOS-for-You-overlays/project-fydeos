@@ -9,7 +9,7 @@ HOMEPAGE="http://www.flintos.io"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
-IUSE="flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl"
+IUSE="flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_edition_uk_customer"
 
 RDEPEND="
 	!chromeos-base/chromeos-bsp-null
@@ -23,6 +23,7 @@ RDEPEND="
 		net-misc/flint-server
 		net-proxy/shadowsocks-libev
 	)
+	chromeos-base/flintos-release
 "
 DEPEND="
 	${RDEPEND}
