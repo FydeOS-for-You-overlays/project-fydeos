@@ -24,10 +24,10 @@ flintos_set_edition() {
 }
 
 
-# @FUNCTION: flintos_update_server
+# @FUNCTION: flintos_set_update_server
 # @DESCRIPTION:
 # Append Flint OS update server values to the /etc/flintos-release file according to the FLINTOS_EDITIONS flag.
-# It must be run after the flintos_set_update_server function
+# It must be run after the flintos_set_edition function
 flintos_set_update_server() {
 	local edition=${FLINTOS_EDITIONS}
 
@@ -38,6 +38,22 @@ flintos_set_update_server() {
 	FLINTOS_AUSERVER=https://up.flintos.xyz/${edition}/update
 	EOF
 	#FLINTOS_DEVSERVER=https://up.flintos.xyz/${edition}
+}
+
+
+# @FUNCTION: flintos_set_dualboot_flag
+# @DESCRIPTION:
+# Append a line of FILNTOS_DUALBOOT=0 to the file /etc/flintos-release. The FLINTOS_DUALBOOT variable is used
+# to indicate whether current system is installed in dual boot mode. It is always set to 0 in the beginning,
+# only changed to 1 if the system is installed to the disk by the dual boot installer.
+# It must be run after the flintos_set_edition function
+flintos_set_dualboot_flag() {
+	local rel="${ED}/etc/flintos-release"
+	[[ ! -e "${rel}" ]] && die "/etc/flintos-release file missing. Run flintos_set_edition first."
+
+	cat <<-EOF >> "${rel}"
+	FLINTOS_DUALBOOT=0
+	EOF
 }
 
 
