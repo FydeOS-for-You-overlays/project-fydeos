@@ -129,3 +129,67 @@ flintos_remove_firmware() {
 	find ${prefix} -type d -empty -delete
 
 }
+
+
+# @FUNCTION: flintos_checkout_local_chrome_source
+# @DESCRIPTION:
+# Checkout local Chrome source code for the chrome ebuild
+flintos_checkout_local_chrome_source() {
+	# Below environment variables can be set to control the logic of this function
+	# SKIP_SYNC
+	#     if set with any value, build from existing source directly without fetching from server at all.
+	# VER_TO_BUILD
+	#     if set with an valid tag/branch/commit ID in the git repo, checkout an build that version.
+	#     This takes precedence over the FLINTOS_EDITIONS use flag
+
+	if [[ -n ${SKIP_SYNC} ]]; then
+		elog "SKIP_SYNC is set, build from local source in ${CHROME_ROOT} directory without fetching from server."
+		return
+	fi
+
+	# Digest version information from ebuild PN.
+	local ver_arry=(${PV//./ })
+	local FLINTOS_VERSION=${ver_arry[1]}.${ver_arry[2]}.${ver_arry[3]}
+	local CR_VERSION=${ver_arry[4]}.${ver_arry[5]}.${ver_arry[6]}.${ver_arry[7]}
+
+	# This allows overriding VER_TO_BUILD from env. var
+	local VER_OVERRIDE=" (Overridden from environment)"
+	if [[ -z ${VER_TO_BUILD} ]]; then
+		if use flintos_editions_vanilla; then
+			local VER_TO_BUILD=${CR_VERSION}
+			VER_OVERRIDE=" (Vanilla Edition)"
+		else
+			local VER_TO_BUILD=${FLINTOS_VERSION}_${CR_VERSION}
+			VER_OVERRIDE=""
+		fi
+	fi
+
+	elog "Version Informatin:
+  Ebuild Version   = ${PV}
+  Flint OS Version = ${FLINTOS_VERSION}
+  Chromium Version = ${CR_VERSION}
+  Version to Build = ${VER_TO_BUILD}${VER_OVERRIDE}"
+
+	elog "Changing dir to local source ${CHROME_ROOT}/src"
+	cd ${CHROME_ROOT}/src
+
+	# Retry 3 times
+	elog "Make sure we have all the release tag information in our local source ..."
+	git fetch --tags --prune ||
+	git fetch --tags --prune ||
+	git fetch --tags --prune ||
+	die "Failed to fetch from remote repository."
+
+	# Known versions can be seen with 'git show-ref --tags'
+	elog "Checking out Chromium code of version ${VER_TO_BUILD} ..."
+	git checkout --force ${VER_TO_BUILD} ||
+	git checkout --force ${VER_TO_BUILD} ||
+	git checkout --force ${VER_TO_BUILD} ||
+	die "Cannot checkout the designated version ${VER_TO_BUILD}, you may have specified a wrong version."
+
+	elog "Syncing all deps of Chromium version ${VER_TO_BUILD} ..."
+	${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force ||
+	${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force ||
+	${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force ||
+	die "Sync deps failed, please retry."
+}
