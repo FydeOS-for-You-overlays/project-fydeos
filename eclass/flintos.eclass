@@ -149,8 +149,7 @@ flintos_checkout_local_chrome_source() {
 
 	# Digest version information from ebuild PN.
 	local ver_arry=(${PV//./ })
-	local FLINTOS_VERSION=${ver_arry[1]}.${ver_arry[2]}.${ver_arry[3]}
-	local CR_VERSION=${ver_arry[4]}.${ver_arry[5]}.${ver_arry[6]}.${ver_arry[7]}
+	local CR_VERSION=${ver_arry[1]}.${ver_arry[2]}.${ver_arry[3]}.${ver_arry[4]}
 
 	# This allows overriding VER_TO_BUILD from env. var
 	local VER_OVERRIDE=" (Overridden from environment)"
@@ -159,14 +158,13 @@ flintos_checkout_local_chrome_source() {
 			local VER_TO_BUILD=${CR_VERSION}
 			VER_OVERRIDE=" (Vanilla Edition)"
 		else
-			local VER_TO_BUILD=${FLINTOS_VERSION}_${CR_VERSION}
+			local VER_TO_BUILD=flint_release_r${CR_VERSION}
 			VER_OVERRIDE=""
 		fi
 	fi
 
 	elog "Version Informatin:
   Ebuild Version   = ${PV}
-  Flint OS Version = ${FLINTOS_VERSION}
   Chromium Version = ${CR_VERSION}
   Version to Build = ${VER_TO_BUILD}${VER_OVERRIDE}"
 
