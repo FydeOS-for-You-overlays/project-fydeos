@@ -22,4 +22,5 @@ src_install() {
 
 	flintos_set_edition
 	flintos_set_update_server
+	flintos_set_dualboot_flag
 }

@@ -1,0 +1,18 @@
+diff --git a/update_manager/chromeos_policy.cc b/update_manager/chromeos_policy.cc
+index 27f0304..0560bdb 100644
+--- a/update_manager/chromeos_policy.cc
++++ b/update_manager/chromeos_policy.cc
+@@ -284,13 +284,6 @@ EvalStatus ChromeOSPolicy::UpdateCheckAllowed(
+   // should not return a final "no" if any of these criteria are not satisfied,
+   // because the system may still update due to an interactive update request.
+ 
+-  // Unofficial builds should not perform periodic update checks.
+-  const bool* is_official_build_p = ec->GetValue(
+-      system_provider->var_is_official_build());
+-  if (is_official_build_p && !(*is_official_build_p)) {
+-    LOG(INFO) << "Unofficial build, blocking periodic update checks.";
+-    return EvalStatus::kAskMeAgainLater;
+-  }
+ 
+   // If OOBE is enabled, wait until it is completed.
+   const bool* is_oobe_enabled_p = ec->GetValue(
