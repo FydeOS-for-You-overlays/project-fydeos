@@ -20,7 +20,7 @@ RDEPEND="
 	chromeos-base/flintos-variant-spec
 	!flintos_editions_vanilla? (
 		chromeos-base/flintos-group-policy
-		net-misc/flint-server
+		net-misc/flint_daemon
 		net-proxy/shadowsocks-libev
 	)
 	chromeos-base/flintos-release
