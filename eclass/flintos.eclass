@@ -148,19 +148,30 @@ flintos_checkout_local_chrome_source() {
 	fi
 
 	# Digest version information from ebuild PN.
-	local ver_arry=(${PV//./ })
-	local CR_VERSION=${ver_arry[1]}.${ver_arry[2]}.${ver_arry[3]}.${ver_arry[4]}
+	# The $PV could be in two possible formats:
+	#   * 9999.a.b.c.d - a.b.c.d is a Chrome version. This type of PV means it's a Flint customized version.
+	#   * a.b.c.d - this type of PV means it is a vanilla version. In such case this function only helps to build from the local source.
+	local ver_array=(${PV//./ })
+	if [[ ${ver_array[0]} != "9999" ]]; then
+		local CR_VERSION=${ver_array[0]}.${ver_array[1]}.${ver_array[2]}.${ver_array[3]}
+	else
+		local CR_VERSION=${ver_array[1]}.${ver_array[2]}.${ver_array[3]}.${ver_array[4]}
+	fi
 
 	# This allows overriding VER_TO_BUILD from env. var
-	local VER_OVERRIDE=" (Overridden from environment)"
 	if [[ -z ${VER_TO_BUILD} ]]; then
 		if use flintos_editions_vanilla; then
 			local VER_TO_BUILD=${CR_VERSION}
-			VER_OVERRIDE=" (Vanilla Edition)"
+			local VER_OVERRIDE=" (Vanilla Edition)"
+		elif [[ ${ver_array[0]} != "9999" ]]; then
+			local VER_TO_BUILD=${CR_VERSION}
+			local VER_OVERRIDE=" (Not 9999 ebuild)"
 		else
 			local VER_TO_BUILD=flint_release_r${CR_VERSION}
-			VER_OVERRIDE=""
+			local VER_OVERRIDE=""
 		fi
+	else
+		local VER_OVERRIDE=" (Overridden from environment)"
 	fi
 
 	elog "Version Informatin:
