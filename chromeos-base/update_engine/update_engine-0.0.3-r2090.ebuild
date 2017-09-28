@@ -3,8 +3,8 @@
 
 EAPI="4"
 
-CROS_WORKON_COMMIT=("920c7f55dfcb4c0051c9391474e0c33878177c9e" "42be0bbbc6b19f47edb383683812482dd46cd29f")
-CROS_WORKON_TREE=("c4211650d6e8f4b4c258b08b80c32a92fd0f172b" "ec7a241a78e363f324f7ef4b5cf0cdc444a65c0a")
+CROS_WORKON_COMMIT=("f44d9daef6b54ba7ffbba0cddddaff67de53e822" "5a5b7ffeee22a104146042fadb435549080f3e2f")
+CROS_WORKON_TREE=("971a2f595dcd438e7bfaf9c62cf787ed04069c72" "964992fb72685927df068ca38442ae0cad03997a")
 CROS_WORKON_LOCALNAME=("platform2" "aosp/system/update_engine")
 CROS_WORKON_PROJECT=("chromiumos/platform2" "aosp/platform/system/update_engine")
 CROS_WORKON_DESTDIR=("${S}/platform2" "${S}/aosp/system/update_engine")
@@ -22,7 +22,7 @@ SRC_URI=""
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="*"
-IUSE="cros_p2p +dbus -delta_generator -hwid_override mtd +power_management systemd"
+IUSE="cros_p2p -delta_generator -hwid_override mtd +power_management systemd"
 
 COMMON_DEPEND="
 	app-arch/bzip2
@@ -50,6 +50,8 @@ DEPEND="
 	chromeos-base/session_manager-client
 	chromeos-base/shill-client
 	chromeos-base/update_engine-client
+	dev-cpp/gmock
+	dev-cpp/gtest
 	mtd? ( dev-embedded/android_mtdutils )
 	sys-fs/e2fsprogs
 	${COMMON_DEPEND}"
