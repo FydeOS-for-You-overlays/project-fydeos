@@ -196,6 +196,17 @@ flintos_checkout_local_chrome_source() {
 	git checkout --force ${VER_TO_BUILD} ||
 	die "Cannot checkout the designated version ${VER_TO_BUILD}, you may have specified a wrong version."
 
+	# A pull is necessary if VER_TO_BUILD is a branch, above checkout will not update local work space from remote.
+	# Howver if VER_TO_BUILD is a tag or a commit ID, then the pull will always fail because merge or rebase on a
+	# tag makes no sense.
+	if git show-ref -q --verify refs/heads/${VER_TO_BUILD}; then # It's a branch
+		elog "Pull the latest code of branch ${VER_TO_BUILD} ..."
+		git pull --rebase ||
+		git pull --rebase ||
+		git pull --rebase ||
+		die "Cannot pull branch ${VER_TO_BUILD}, you may have network issue."
+	fi
+
 	elog "Syncing all deps of Chromium version ${VER_TO_BUILD} ..."
 	${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force ||
 	${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force ||

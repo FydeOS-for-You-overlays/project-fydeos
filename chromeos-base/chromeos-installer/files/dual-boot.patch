@@ -1,0 +1,240 @@
+diff --git a/installer/chromeos_postinst.cc b/installer/chromeos_postinst.cc
+index 016286d..c1d3637 100644
+--- a/installer/chromeos_postinst.cc
++++ b/installer/chromeos_postinst.cc
+@@ -28,25 +28,59 @@ bool ConfigureInstall(const string& install_dev,
+                       InstallConfig* install_config) {
+   Partition root = Partition(install_dev, install_path);
+ 
+-  string slot;
+-  switch (root.number()) {
+-    case PART_NUM_ROOT_A:
+-      slot = "A";
+-      break;
+-    case PART_NUM_ROOT_B:
+-      slot = "B";
+-      break;
+-    default:
+-      fprintf(stderr,
+-              "Not a valid target partition number: %i\n", root.number());
+-      return false;
+-  }
+-
+-  string kernel_dev = MakePartitionDev(root.base_device(),
+-                                       root.number() - 1);
++  string slot, kernel_dev, boot_dev;
++  DualBootPartitions dbp;
++  if (dbp.isDualBoot()) {
++    printf("Dual boot system\n");
++      const int DUALBOOT_KERN_A = dbp.getKernA();
++      const int DUALBOOT_KERN_B = dbp.getKernB();
++      const int DUALBOOT_ROOT_A = dbp.getRootA();
++      const int DUALBOOT_ROOT_B = dbp.getRootB();
++      const int DUALBOOT_EFI_SYSTEM = dbp.getEfiSystem();
++      
++      if (root.number() == DUALBOOT_ROOT_A) {
++        slot = "A";
++        kernel_dev = MakePartitionDev(root.base_device(),
++                                      DUALBOOT_KERN_A);
++        boot_dev = MakePartitionDev(root.base_device(),
++                                    DUALBOOT_EFI_SYSTEM);
++      }
++      else if (root.number() == DUALBOOT_ROOT_B) {
++        slot = "B";
++        kernel_dev = MakePartitionDev(root.base_device(),
++                                      DUALBOOT_KERN_B);
++        boot_dev = MakePartitionDev(root.base_device(),
++                                    DUALBOOT_EFI_SYSTEM);
++      }
++      else {
++        fprintf(stderr,
++                "Not a valid target partition number: %i\n", root.number());
++      }
+ 
+-  string boot_dev = MakePartitionDev(root.base_device(),
+-                                     PART_NUM_EFI_SYSTEM);
++  }
++  else { //standalone boot. keep the chromeos hard coded partitions
++    printf("Standalone boot system\n");
++    switch (root.number()) {
++       case PART_NUM_ROOT_A:
++         slot = "A";
++         kernel_dev = MakePartitionDev(root.base_device(),
++                                   root.number() - 1);
++         boot_dev = MakePartitionDev(root.base_device(),
++                                 PART_NUM_EFI_SYSTEM);
++         break;
++       case PART_NUM_ROOT_B:
++         slot = "B";
++         kernel_dev = MakePartitionDev(root.base_device(),
++                                   root.number() - 1);
++         boot_dev = MakePartitionDev(root.base_device(),
++                                 PART_NUM_EFI_SYSTEM);
++         break;
++       default:
++         fprintf(stderr,
++                 "Not a valid target partition number: %i\n", root.number());
++         return false;
++     }
++   }
+ 
+   // if we don't know the bios type, detect it. Errors are logged
+   // by the detect method.
+diff --git a/installer/inst_util.cc b/installer/inst_util.cc
+index 2e3cefd..2aca913 100644
+--- a/installer/inst_util.cc
++++ b/installer/inst_util.cc
+@@ -42,12 +42,27 @@ string MakeNandPartitionDevForMounting(int partition) {
+   if (partition == 0) {
+     return "/dev/mtd0";
+   }
++  // dual boot needs to work on SSD as well
++  DualBootPartitions dbp;
++  int DUALBOOT_ROOT_A,DUALBOOT_ROOT_B,DUALBOOT_ROOT_C,DUALBOOT_KERN_A,
++      DUALBOOT_KERN_B,DUALBOOT_KERN_C;
++  if (dbp.isDualBoot()) {
++      DUALBOOT_KERN_A = dbp.getKernA();
++      DUALBOOT_KERN_B = dbp.getKernB();
++      DUALBOOT_KERN_C = dbp.getKernC();
++      DUALBOOT_ROOT_A = dbp.getRootA();
++      DUALBOOT_ROOT_B = dbp.getRootB();
++      DUALBOOT_ROOT_C = dbp.getRootC();
++  }
++
+   if (partition == PART_NUM_KERN_A || partition == PART_NUM_KERN_B ||
+-      partition == PART_NUM_KERN_C) {
++      partition == PART_NUM_KERN_C || partition == DUALBOOT_KERN_A ||
++      partition == DUALBOOT_KERN_B || partition == DUALBOOT_KERN_C) {
+     return StringPrintf("/dev/mtd%d", partition);
+   }
+   if (partition == PART_NUM_ROOT_A || partition == PART_NUM_ROOT_B ||
+-      partition == PART_NUM_ROOT_C) {
++      partition == PART_NUM_ROOT_C || partition == DUALBOOT_ROOT_A ||
++      partition == DUALBOOT_ROOT_B || partition == DUALBOOT_ROOT_C) {
+     return StringPrintf("/dev/ubiblock%d_0", partition);
+   }
+   return StringPrintf("/dev/ubi%d_0", partition);
+diff --git a/installer/inst_util.h b/installer/inst_util.h
+index e78fd3d..7666a68 100644
+--- a/installer/inst_util.h
++++ b/installer/inst_util.h
+@@ -5,8 +5,111 @@
+ #ifndef INSTALLER_INST_UTIL_H_
+ #define INSTALLER_INST_UTIL_H_
+ 
++#include <sstream>
++#include <fstream>
+ #include <string>
+ #include <vector>
++#include <unordered_map>
++
++class DualBootPartitions
++{
++  public:
++   DualBootPartitions() {
++    fillPartitionMap();
++   }
++
++   DualBootPartitions operator=(DualBootPartitions& ) =delete;
++   DualBootPartitions (DualBootPartitions& lhs)  =delete;
++
++   // dual boot or not ?
++   bool isDualBoot() {
++     return ((stoi(partitionMap.find(dualBoot_FlintOS)->second))? true : false);
++   }
++   // public methodds to get the respective partition numbers
++   int getKernA() {
++    if (partitionMap.find(dualBootKernA) != partitionMap.end())
++       return stoi(partitionMap.find(dualBootKernA)->second);
++    else
++     return 0;
++   }
++
++   int getKernB() {
++    if (partitionMap.find(dualBootKernB) != partitionMap.end())
++       return stoi(partitionMap.find(dualBootKernB)->second);
++    else
++     return 0;
++   }
++
++   int getKernC() {
++    if (partitionMap.find(dualBootKernC) != partitionMap.end())
++       return stoi(partitionMap.find(dualBootKernC)->second);
++    else
++     return 0;
++   }
++
++   int getRootA() {
++    if (partitionMap.find(dualBootRootA) != partitionMap.end())
++       return stoi(partitionMap.find(dualBootRootA)->second);
++    else
++     return 0;
++   }
++
++   int getRootB() {
++    if (partitionMap.find(dualBootRootB) != partitionMap.end())
++       return stoi(partitionMap.find(dualBootRootB)->second);
++    else
++     return 0;
++   }
++
++   int getRootC() {
++    if (partitionMap.find(dualBootRootC) != partitionMap.end())
++       return stoi(partitionMap.find(dualBootRootC)->second);
++    else
++     return 0;
++   }
++
++   int getEfiSystem() {
++    if (partitionMap.find(dualBootEfiSystem) != partitionMap.end())
++       return stoi(partitionMap.find(dualBootEfiSystem)->second);
++    else
++     return 0;
++   }
++  private: 
++   // map that holds the contents of the /etc/flintos-release
++   std::unordered_map <std::string, std::string> partitionMap;
++   // keys in the flintos-release for querying
++   std::string filename = "/etc/flintos-release";
++   std::string dualBoot_FlintOS = "FLINTOS_DUALBOOT";
++   std::string dualBootKernA = "DUALBOOT_KERN_A";
++   std::string dualBootKernB  = "DUALBOOT_KERN_B";
++   std::string dualBootKernC  = "DUALBOOT_KERN_C";
++   std::string dualBootRootA = "DUALBOOT_ROOT_A";
++   std::string dualBootRootB = "DUALBOOT_ROOT_B";
++   std::string dualBootRootC = "DUALBOOT_ROOT_C";
++   std::string dualBootEfiSystem = "DUALBOOT_EFI_SYSTEM";
++
++   void fillPartitionMap()
++   {
++     std::ifstream infile (filename.c_str());
++  
++     if (infile.is_open()) {
++         std::string line,key,value ;
++         while (getline(infile, line)) {
++             std::istringstream iss(line);
++             if (getline(iss, key, '=')) {
++                 if (getline(iss, value)) {
++                     partitionMap[key] = value;
++                 }
++             }
++         }
++         infile.close();
++      }
++      else {
++         //log error unable to open file
++          fprintf(stderr, "/etc/flintos-release is either missing, or corrupt");
++      }
++    }
++};
+ 
+ enum partition_nums_t {
+   PART_NUM_KERN_A = 2,
+@@ -20,6 +123,7 @@ enum partition_nums_t {
+   PART_NUM_EFI_SYSTEM = 12
+ };
+ 
++
+ // A class to automatically close a pure file descriptor. A ScopedFileDescriptor
+ // object can be treated as any regular file descriptor. You can call read(),
+ // write(), etc. on these objects.

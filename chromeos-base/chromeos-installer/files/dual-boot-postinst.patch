@@ -1,0 +1,11 @@
+diff -Nurp chromeos-installer-0.0.1.orig/installer/chromeos-postinst chromeos-installer-0.0.1/installer/chromeos-postinst
+--- chromeos-installer-0.0.1.orig/installer/chromeos-postinst	2017-09-24 13:09:45.451120316 +0800
++++ chromeos-installer-0.0.1/installer/chromeos-postinst	2017-09-24 13:10:43.002829491 +0800
+@@ -11,3 +11,7 @@
+ INSTALL_ROOT=$(dirname "$0")
+ 
+ ${INSTALL_ROOT}/usr/bin/cros_installer postinst "${INSTALL_ROOT}" $@
++
++# INSTALL_ROOT is the a temp dir that th new root fs mounts under
++# $@ is the device name of the new rootfs
++${INSTALL_ROOT}/usr/sbin/flintos-post-install.sh ${INSTALL_ROOT}
