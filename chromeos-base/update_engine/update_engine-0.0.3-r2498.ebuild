@@ -78,6 +78,7 @@ src_unpack() {
 
 	cd ${S}
 	epatch ${FILESDIR}/enable-update-check-for-non-official-builds.patch
+	epatch ${FILESDIR}/enable-update-for-removable-media.patch
 	epatch ${FILESDIR}/dual-boot.patch
 }
 
