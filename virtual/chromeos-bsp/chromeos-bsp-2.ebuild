@@ -9,7 +9,7 @@ HOMEPAGE="http://www.flintos.io"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
-IUSE="flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_edition_uk_customer"
+IUSE="flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_editions_uk_customer flintos_editions_local"
 
 RDEPEND="
 	!chromeos-base/chromeos-bsp-null

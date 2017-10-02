@@ -504,6 +504,7 @@ IUSE+="
 	flintos_editions_dev_china
 	flintos_editions_dev_intl
 	flintos_editions_uk_customer
+	flintos_editions_local
 "
 
 src_unpack() {
