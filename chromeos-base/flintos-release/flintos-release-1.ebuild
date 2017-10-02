@@ -18,7 +18,8 @@ RDEPEND="${DEPEND}"
 S=${WORKDIR}
 
 src_install() {
-	dodir /etc
+	insinto /etc
+	doins ${FILESDIR}/os-release
 
 	flintos_set_edition
 	flintos_set_update_server
