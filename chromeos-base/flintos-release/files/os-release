@@ -1,0 +1,7 @@
+NAME=FlintOS
+ID=flintos
+PRETTY_NAME="Flint OS"
+ANSI_COLOR="1;32"
+HOME_URL="https://flintos.io/"
+SUPPORT_URL="https://flintos.io/support/"
+BUG_REPORT_URL="https://flintos.io/#sayhi"
