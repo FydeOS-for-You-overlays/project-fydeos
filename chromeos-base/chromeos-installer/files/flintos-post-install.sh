@@ -7,7 +7,9 @@ INSTALL_ROOT=$1
 mount -o remount,rw ${INSTALL_ROOT}
 
 # Take care of dual boot
-${INSTALL_ROOT}/usr/sbin/dual-boot-install.sh -r ${INSTALL_ROOT}
+if grep -q -s "^FLINTOS_DUALBOOT=1$" /etc/flintos-release; then
+	${INSTALL_ROOT}/usr/sbin/dual-boot-install.sh -r ${INSTALL_ROOT}
+fi
 
 # Copy all customized files from old root fs
 cp -af /etc/modprobe.d/flintos* ${INSTALL_ROOT}/etc/modprobe.d/
