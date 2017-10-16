@@ -13,22 +13,25 @@ SRC_URI="https://github.com/shadowsocks/shadowsocks-libev/releases/download/v${P
 LICENSE="GPL-3+"
 SLOT="0"
 KEYWORDS="amd64 arm arm64 x86"
-IUSE="debug doc"
+IUSE="debug -doc"
 RESTRICT="mirror"
 
-RDEPEND="net-libs/mbedtls
+RDEPEND="
+	app-misc/jq
+	net-libs/mbedtls
 	>=dev-libs/libsodium-1.0.8
 	dev-libs/libev
+	net-firewall/ipset
 	net-libs/udns
 	dev-libs/libpcre
-	"
+"
 DEPEND="${RDEPEND}
 	sys-kernel/linux-headers
 	doc? (
 		app-text/asciidoc
 		app-text/xmlto
 	)
-	"
+"
 
 src_prepare() {
 	default
@@ -63,6 +66,18 @@ src_install() {
 	systemd_newunit "${FILESDIR}/${PN}-server_at.service" "${PN}-server@.service"
 	systemd_newunit "${FILESDIR}/${PN}-redir_at.service" "${PN}-redir@.service"
 	systemd_newunit "${FILESDIR}/${PN}-tunnel_at.service" "${PN}-tunnel@.service"
+
+	# Generate chnroute.txt file
+	curl 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest' \
+		| grep ipv4 \
+		| grep CN \
+		| awk -F\| '{ printf("%s/%d\n", $4, 32-log($5)/log(2)) }' \
+		> ${ED}/etc/${PN}/chnroute.txt \
+		|| die
+
+	insinto /etc/init
+	doins ${FILESDIR}/ss-local.conf
+	doins ${FILESDIR}/ss-redir.conf
 }
 
 pkg_setup() {
