@@ -22,7 +22,7 @@ RDEPEND="
 	>=dev-libs/libsodium-1.0.8
 	dev-libs/libev
 	net-firewall/ipset
-	net-libs/udns
+	net-dns/c-ares
 	dev-libs/libpcre
 "
 DEPEND="${RDEPEND}
