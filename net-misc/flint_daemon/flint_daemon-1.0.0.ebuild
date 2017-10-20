@@ -7,6 +7,8 @@ inherit git-2
 
 DESCRIPTION="The daemon composed by nodejs and running on Flint OS. It provides the background support for Flint OS extensions."
 EGIT_REPO_URI="git@git.flintos.xyz:cockpit/flint_daemon.git"
+EGIT_BRANCH="master"
+EGIT_COMMIT="17620147215514ed0e33c80b79964ece4e56ac62"
 HOMEPAGE="http://www.flintos.io/"
 
 LICENSE="GPL-2"
