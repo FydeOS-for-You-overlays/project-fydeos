@@ -16,6 +16,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
+RESTRICT="network-sandbox"
+
 RDEPEND="net-libs/nodejs"
 DEPEND="${RDEPEND}"
 
