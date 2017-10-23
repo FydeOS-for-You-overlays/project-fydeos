@@ -1,0 +1,6 @@
+user:ss
+uid:999
+gid:999
+gecos:ss daemon
+home:/dev/null
+shell:/bin/false
