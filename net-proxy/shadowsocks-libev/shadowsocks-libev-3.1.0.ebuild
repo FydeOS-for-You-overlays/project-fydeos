@@ -3,7 +3,7 @@
 
 EAPI=5
 
-inherit autotools eutils systemd
+inherit autotools eutils systemd user
 
 DESCRIPTION="A lightweight secured SOCKS5 proxy for embedded devices and low end boxes"
 HOMEPAGE="https://github.com/shadowsocks/shadowsocks-libev"
@@ -14,7 +14,7 @@ LICENSE="GPL-3+"
 SLOT="0"
 KEYWORDS="amd64 arm arm64 x86"
 IUSE="debug -doc"
-RESTRICT="mirror"
+RESTRICT="mirror network-sandbox"
 
 RDEPEND="
 	app-misc/jq
@@ -67,7 +67,8 @@ src_install() {
 	systemd_newunit "${FILESDIR}/${PN}-redir_at.service" "${PN}-redir@.service"
 	systemd_newunit "${FILESDIR}/${PN}-tunnel_at.service" "${PN}-tunnel@.service"
 
-	# Generate chnroute.txt file
+	# Generate chnroute.txt file, make it die if any command in the pipe failed.
+	set -o pipefail
 	curl 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest' \
 		| grep ipv4 \
 		| grep CN \
@@ -81,6 +82,9 @@ src_install() {
 }
 
 pkg_setup() {
+	enewgroup ss
+	enewuser ss -1 -1 -1 ss
+
 	elog "You need to choose the mode"
 	elog "  server: rc-update add shadowsocks.server default"
 	elog "  client: rc-update add shadowsocks.client default"
