@@ -1,0 +1,9 @@
+# Mask below packages to build for 60
+>chromeos-base/chromeos-chrome-9999.61
+>chromeos-base/chromeos-installer-0.0.1-r2455
+>chromeos-base/update_engine-0.0.3-r2498
+
+# Mask below packages to build for 61
+#>chromeos-base/chromeos-chrome-9999.62
+#>chromeos-base/chromeos-installer-0.0.1-r2582
+#>chromeos-base/update_engine-0.0.3-r2611
