@@ -9,7 +9,7 @@ HOMEPAGE="http://www.flintos.io"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
-IUSE="flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_editions_uk_customer flintos_editions_local"
+IUSE="flint_policy flint_daemon shadowsocks"
 
 RDEPEND="
 	!chromeos-base/chromeos-bsp-null
@@ -18,12 +18,10 @@ RDEPEND="
 	chromeos-base/flintos-chip-spec
 	chromeos-base/flintos-board-spec
 	chromeos-base/flintos-variant-spec
-	!flintos_editions_vanilla? (
-		chromeos-base/flintos-group-policy
-		net-misc/flint_daemon
-		net-proxy/shadowsocks-libev
-	)
 	chromeos-base/flintos-release
+	flint_policy? ( chromeos-base/flintos-group-policy )
+	flint_daemon? ( net-misc/flint_daemon )
+	shadowsocks? ( net-proxy/shadowsocks-libev )
 "
 DEPEND="
 	${RDEPEND}
