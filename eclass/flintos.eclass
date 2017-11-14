@@ -29,15 +29,12 @@ flintos_set_edition() {
 # Append Flint OS update server values to the /etc/flintos-release file according to the FLINTOS_EDITIONS flag.
 # It must be run after the flintos_set_edition function
 flintos_set_update_server() {
-	local edition=${FLINTOS_EDITIONS}
-
 	local rel="${ED}/etc/flintos-release"
 	[[ ! -e "${rel}" ]] && die "/etc/flintos-release file missing. Run flintos_set_edition first."
 
 	cat <<-EOF >> "${rel}"
-	FLINTOS_AUSERVER=https://up.flintos.xyz/${edition}/update
+	FLINTOS_AUSERVER=https://up.flintos.xyz/service/update2
 	EOF
-	#FLINTOS_DEVSERVER=https://up.flintos.xyz/${edition}
 }
 
 
