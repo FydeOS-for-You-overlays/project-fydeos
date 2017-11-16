@@ -145,14 +145,24 @@ flintos_checkout_local_chrome_source() {
 	fi
 
 	# Digest version information from ebuild PN.
-	# The $PV could be in two possible formats:
-	#   * 9999.a.b.c.d - a.b.c.d is a Chrome version. This type of PV means it's a Flint customized version.
-	#   * a.b.c.d - this type of PV means it is a vanilla version. In such case this function only helps to build from the local source.
+	# The $PV could be in three possible formats:
+	#   * 9999.a.b.c.d.e.f - a.b.c.d is a Chrome version, e.f is a Flint OS version. This type of PV means it's a Flint customized version.
+	#                        It is for building from flint_release_r$a.$b.$c.$d_v$e.$f for public releases.
+	#   * 9999.a           - a is a Chrome major release number. This type of PV means it's a Flint customized version also.
+	#                        It is for building HEAD of flint_master_r$a branch in development phase.
+	#   * a.b.c.d          - this type of PV means it is a vanilla version. In such case this function only helps to build from the local source.
 	local ver_array=(${PV//./ })
-	if [[ ${ver_array[0]} != "9999" ]]; then
+	if [[ ${ver_array[0]} != "9999" ]]; then # Above situation #3
 		local CR_VERSION=${ver_array[0]}.${ver_array[1]}.${ver_array[2]}.${ver_array[3]}
-	else
+	elif [[ ${#ver_array[@]} == 2 ]]; then   # Above situation #2
+		local CR_BRANCH=flint_master_r
+		local CR_VERSION=${ver_array[1]}
+	elif [[ ${#ver_array[@]} == 7 ]]; then   # Above situation #1
+		local CR_BRANCH=flint_release_r
 		local CR_VERSION=${ver_array[1]}.${ver_array[2]}.${ver_array[3]}.${ver_array[4]}
+		local FLINT_VERSION=_v${ver_array[5]}.${ver_array[6]}
+	else
+		die "Package version format not recognized."
 	fi
 
 	# This allows overriding VER_TO_BUILD from env. var
@@ -160,11 +170,12 @@ flintos_checkout_local_chrome_source() {
 		if use flintos_editions_vanilla; then
 			local VER_TO_BUILD=${CR_VERSION}
 			local VER_OVERRIDE=" (Vanilla Edition)"
+			[[ ${#ver_array[@]} == 7 ]] || die "The ebuild version ${PV} is not sufficient to build vanilla edition."
 		elif [[ ${ver_array[0]} != "9999" ]]; then
 			local VER_TO_BUILD=${CR_VERSION}
 			local VER_OVERRIDE=" (Not 9999 ebuild)"
 		else
-			local VER_TO_BUILD=flint_release_r${CR_VERSION}
+			local VER_TO_BUILD=${CR_BRANCH}${CR_VERSION}${FLINT_VERSION}
 			local VER_OVERRIDE=""
 		fi
 	else
