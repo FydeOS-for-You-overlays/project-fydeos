@@ -69,7 +69,7 @@ REQUIRED_USE="
 	thinlto? ( clang gold )
 	"
 
-IUSE+=" flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_editions_uk_customer flintos_editions_local"
+IUSE+=" flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_editions_uk_customer flintos_editions_demo flintos_editions_local"
 
 OZONE_PLATFORM_PREFIX=ozone_platform_
 OZONE_PLATFORMS=(gbm cast test egltest caca)
@@ -149,7 +149,6 @@ AFDO_FILE["arm"]="chromeos-chrome-amd64-60.0.3077.0_rc-r1.afdo"
 AFDO_FILE_LLVM["amd64"]="chromeos-chrome-amd64-61.0.3163.122_rc-r1.afdo"
 AFDO_FILE_LLVM["x86"]="chromeos-chrome-amd64-61.0.3163.122_rc-r1.afdo"
 AFDO_FILE_LLVM["arm"]="chromeos-chrome-amd64-61.0.3163.122_rc-r1.afdo"
-
 
 # This dictionary can be used to manually override the setting for the
 # AFDO profile file. Any non-empty values in this array will take precedence

@@ -69,6 +69,8 @@ REQUIRED_USE="
 	thinlto? ( clang gold )
 	"
 
+IUSE+=" flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_editions_uk_customer flintos_editions_demo flintos_editions_local"
+
 OZONE_PLATFORM_PREFIX=ozone_platform_
 OZONE_PLATFORMS=(gbm cast test egltest caca)
 IUSE_OZONE_PLATFORMS="${OZONE_PLATFORMS[@]/#/${OZONE_PLATFORM_PREFIX}}"
@@ -498,14 +500,6 @@ sandboxless_ensure_directory() {
 		fi
 	done
 }
-
-IUSE+="
-	flintos_editions_vanilla
-	flintos_editions_dev_china
-	flintos_editions_dev_intl
-	flintos_editions_uk_customer
-	flintos_editions_local
-"
 
 src_unpack() {
 	tc-export CC CXX
