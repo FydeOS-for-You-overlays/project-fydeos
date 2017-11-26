@@ -1,6 +1,19 @@
 # Copyright (c) 2017 Flint Innovations Limited. All rights reserved.
 # Distributed under the terms of the GNU General Public License v2
 
+# Private helper functions
+# Retry command $2 until success, up to $1 times
+_retry_cmd() {
+	local retries=$1
+	local cmd=$2
+
+	while (( retries-- > 0 )); do
+		eval $cmd
+		[[ $? = 0 ]] && break
+	done
+}
+
+
 # @ECLASS: flintos.eclass
 # @MAINTAINER:
 # Kai Liu <kraml@flintos.io>
@@ -192,32 +205,24 @@ flintos_checkout_local_chrome_source() {
 
 	# Retry 3 times
 	elog "Make sure we have all the release tag information in our local source ..."
-	git fetch --tags --prune ||
-	git fetch --tags --prune ||
-	git fetch --tags --prune ||
-	die "Failed to fetch from remote repository."
+	_retry_cmd 50 "git fetch --tags --prune" ||
+		die "Failed to fetch from remote repository."
 
 	# Known versions can be seen with 'git show-ref --tags'
 	elog "Checking out Chromium code of version ${VER_TO_BUILD} ..."
-	git checkout --force ${VER_TO_BUILD} ||
-	git checkout --force ${VER_TO_BUILD} ||
-	git checkout --force ${VER_TO_BUILD} ||
-	die "Cannot checkout the designated version ${VER_TO_BUILD}, you may have specified a wrong version."
+	_retry_cmd 50 "git checkout --force ${VER_TO_BUILD}" ||
+		die "Cannot checkout the designated version ${VER_TO_BUILD}, you may have specified a wrong version."
 
 	# A pull is necessary if VER_TO_BUILD is a branch, above checkout will not update local work space from remote.
 	# Howver if VER_TO_BUILD is a tag or a commit ID, then the pull will always fail because merge or rebase on a
 	# tag makes no sense.
 	if git show-ref -q --verify refs/heads/${VER_TO_BUILD}; then # It's a branch
 		elog "Pull the latest code of branch ${VER_TO_BUILD} ..."
-		git pull --rebase ||
-		git pull --rebase ||
-		git pull --rebase ||
-		die "Cannot pull branch ${VER_TO_BUILD}, you may have network issue."
+		_retry_cmd 50 "git pull --rebase" ||
+			die "Cannot pull branch ${VER_TO_BUILD}, you may have network issue."
 	fi
 
 	elog "Syncing all deps of Chromium version ${VER_TO_BUILD} ..."
-	${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force ||
-	${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force ||
-	${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force ||
-	die "Sync deps failed, please retry."
+	_retry_cmd 50 "${EGCLIENT} sync -r ${VER_TO_BUILD} --jobs 16 --with_branch_heads --with_tags --delete_unversioned_trees --reset --nohooks --force" ||
+		die "Sync deps failed, please retry."
 }
