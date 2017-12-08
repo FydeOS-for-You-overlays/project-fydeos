@@ -70,6 +70,7 @@ REQUIRED_USE="
 	"
 
 IUSE+=" flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_editions_uk_customer flintos_editions_demo flintos_editions_local"
+IUSE+=" widevine"
 
 OZONE_PLATFORM_PREFIX=ozone_platform_
 OZONE_PLATFORMS=(gbm cast test egltest caca)
@@ -463,6 +464,10 @@ set_build_args() {
 			fi
 		fi
 		BUILD_ARGS+=( symbol_level=2 )
+	fi
+
+	if use widevine; then
+		BUILD_ARGS+=( enable_widevine=true )
 	fi
 
 	# Prevents gclient from updating self.
