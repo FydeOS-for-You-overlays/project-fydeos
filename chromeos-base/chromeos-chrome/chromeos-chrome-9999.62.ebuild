@@ -470,6 +470,10 @@ set_build_args() {
 		BUILD_ARGS+=( enable_widevine=true )
 	fi
 
+	# Build in official mode
+	BUILD_ARGS+=( is_official_build=true )
+	export OFFICIAL_BUILD=1
+
 	# Prevents gclient from updating self.
 	export DEPOT_TOOLS_UPDATE=0
 }
