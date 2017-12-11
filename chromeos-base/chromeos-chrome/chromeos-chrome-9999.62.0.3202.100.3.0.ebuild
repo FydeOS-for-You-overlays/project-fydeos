@@ -15,7 +15,7 @@
 # to gclient path.
 
 EAPI="4"
-inherit autotest-deponly binutils-funcs cros-constants eutils flag-o-matic git-2 multilib toolchain-funcs flintos
+inherit autotest-deponly binutils-funcs cros-constants eutils flag-o-matic git-2 multilib toolchain-funcs cros-workon user flintos
 
 DESCRIPTION="Open-source version of Google Chrome web browser"
 HOMEPAGE="http://www.chromium.org/"
@@ -70,6 +70,7 @@ REQUIRED_USE="
 	"
 
 IUSE+=" flintos_editions_vanilla flintos_editions_dev_china flintos_editions_dev_intl flintos_editions_uk_customer flintos_editions_demo flintos_editions_local"
+IUSE+=" widevine"
 
 OZONE_PLATFORM_PREFIX=ozone_platform_
 OZONE_PLATFORMS=(gbm cast test egltest caca)
@@ -464,6 +465,14 @@ set_build_args() {
 		fi
 		BUILD_ARGS+=( symbol_level=2 )
 	fi
+
+	if use widevine; then
+		BUILD_ARGS+=( enable_widevine=true )
+	fi
+
+	# Build in official mode
+	BUILD_ARGS+=( is_official_build=true )
+	export OFFICIAL_BUILD=1
 
 	# Prevents gclient from updating self.
 	export DEPOT_TOOLS_UPDATE=0
