@@ -8,7 +8,7 @@ inherit git-2
 DESCRIPTION="The daemon composed by nodejs and running on Flint OS. It provides the background support for Flint OS extensions."
 EGIT_REPO_URI="git@git.flintos.xyz:cockpit/flint_daemon.git"
 EGIT_BRANCH="master"
-#EGIT_COMMIT="29fa931f0013dbab48b9d8e658f16ba885f44d98"
+EGIT_COMMIT="e8af73eb72e39b0712bc73e3fde7def62c44ebd4"
 HOMEPAGE="https://flintos.io/"
 
 LICENSE="GPL-2"
@@ -25,10 +25,21 @@ src_install() {
 	insinto /etc/init
 	doins ${FILESDIR}/flint_daemon.conf
 
-	insinto /usr/share/flint_daemon
+	# Build the obscured source and install them
+	# Install necessary npm utilies needed to run following commands
+	time npm install --only=dev || die
 	npm run dist || die
+	insinto /usr/share/flint_daemon
 	doins -r dist/*
 
+	# Install node_modules in the installed dir, this time only production dependencies
 	cd ${ED}/usr/share/flint_daemon
-	npm install || die
+	time npm install --only=production || die
+
+	# Remove "scripts" section from package.json as it is not required at run time actually and may leak some our internal information
+	jq 'del(.scripts)' package.json > tmp.$$.json &&
+		mv tmp.$$.json package.json
+
+	# Remove unnecessary files
+	rm config/development.json
 }
