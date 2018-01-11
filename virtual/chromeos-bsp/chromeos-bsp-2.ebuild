@@ -19,6 +19,7 @@ RDEPEND="
 	chromeos-base/flintos-board-spec
 	chromeos-base/flintos-variant-spec
 	chromeos-base/flintos-release
+	chromeos-base/vpd-info-append
 	flint_policy? ( chromeos-base/flintos-group-policy )
 	flint_daemon? ( net-misc/flint_daemon )
 	shadowsocks? ( net-proxy/shadowsocks-libev )

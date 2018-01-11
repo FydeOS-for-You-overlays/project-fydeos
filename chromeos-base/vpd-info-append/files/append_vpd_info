@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Copyright (c) 2016-2018 The Flint OS Authors. All rights reserved.
+# Distributed under the terms of the GNU General Public License v2
+
+UI_MACHINE_INFO_FILE=/run/session_manager/machine-info
+
+# Just continue if one of the commands below fails.
+set +e
+
+# serial number and echo group code.
+serial=$(ifconfig -a | awk '/ether/ { print $2}' | sed "s/://g")
+echo "\"serial_number\"=\"${serial}\"" >> "${UI_MACHINE_INFO_FILE}"
+
