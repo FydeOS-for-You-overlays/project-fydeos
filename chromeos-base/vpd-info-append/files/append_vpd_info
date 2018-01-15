@@ -11,10 +11,10 @@ LAN_MAC_NODE=$NET_NODE/eth0/address
 WLAN_MAC_NODE=$NET_NODE/wlan0/address
 
 # Just continue if one of the commands below fails.
-set +e
+#set +e
 
-is_chromebook(){
-	grep -q "serial_number" "$UI_MACHINE_INFO_FILE"
+get_serial(){
+     	grep '"serial_number"' $UI_MACHINE_INFO_FILE |sed 's/"serial_number"=//g'|sed 's/"//g'|sed '/^$/d'
 }
 
 get_system_mac(){
@@ -27,10 +27,6 @@ get_system_mac(){
 	fi 
 }
 
-get_oem_partition(){
-	mount|grep $OEM_PATH
-}
-
 remount_root_writable(){
 	mount -o remount rw /
 }
@@ -40,25 +36,28 @@ remount_root_readonly(){
 }
 
 remount_oem_writable(){
-	mount -o remount rw $OEM_PATH
+	mount -o remount,rw "$OEM_PATH"
 }
 
 remount_oem_readonly(){
-	mount -o remount ro $OEM_PATH
+	mount -o remount,ro "$OEM_PATH"
 }
 
 store_mac(){
 	local mac=$1
-	local oem_mounted=$(get_oem_partition)
-	if [ -n $mac ]; then
-		if [ -n $oem_mounted ]; then
+	local oem_mounted
+	if mount | grep -q $OEM_PATH; then
+		oem_mounted="oem_mounted"
+	fi
+	if [ ! -z "$mac" ]; then
+		if [ ! -z "$oem_mounted" ]; then
 			remount_oem_writable
 		else
 			remount_root_writable
 		fi
 		echo $mac > $STORED_MAC_FILE
 		chmod 400 $STORED_MAC_FILE
-		if [ -n $oem_mounted ]; then
+		if [ ! -z "$oem_mounted" ]; then
 			remount_oem_readonly
 		else
 			remount_root_readonly
@@ -71,13 +70,16 @@ get_mac(){
 		cat $STORED_MAC_FILE
 	else
 		local mac=$(get_system_mac)
-		store_mac $mac
 		echo $mac
+		store_mac $mac
 	fi
 }
 # serial number and echo group code.
-if is_chromebook ; then exit 0; fi
+system_serial=$(get_serial)
+if [ ! -z "$system_serial" ]; then 
+	exit 0
+fi
 serial=$(get_mac | sed "s/://g")
-if [ -n $serial ]; then
+if [ ! -z "$serial" ]; then
 	echo "\"serial_number\"=\"${serial}\"" >> "${UI_MACHINE_INFO_FILE}"
 fi
