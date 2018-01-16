@@ -9,6 +9,8 @@ author        "yang@flintos.io"
 
 # Start after the system is mostly up and running, which also implies
 # that the VPD has been read and the udev database is fully initialized.
-start on stopped ui-collect-machine-info
+start on started system-services
 
+pre-start exec /usr/share/cros/init/ui-collect-machine-info
 exec /bin/sh /usr/share/cros/init/append_vpd_info
+
