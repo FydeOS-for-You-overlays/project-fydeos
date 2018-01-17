@@ -20,7 +20,7 @@ S="${WORKDIR}"
 
 src_install() {
 	insinto /etc/init
-	doins ${FILESDIR}/vpd-info-append.conf
+	doins ${FILESDIR}/ui-collect-machine-info.override
 
 	insinto /usr/share/cros/init
 	doins ${FILESDIR}/append_vpd_info
