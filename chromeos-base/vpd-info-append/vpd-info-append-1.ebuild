@@ -21,7 +21,11 @@ S="${WORKDIR}"
 src_install() {
 	insinto /etc/init
 	doins ${FILESDIR}/ui-collect-machine-info.override
+	doins ${FILESDIR}/machine-info.override
 
 	insinto /usr/share/cros/init
 	doins ${FILESDIR}/append_vpd_info
+	doins ${FILESDIR}/flint-write-machine-info
+
+	dobin ${FILESDIR}/flintsystem
 }
