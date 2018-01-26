@@ -157,21 +157,27 @@ flintos_checkout_local_chrome_source() {
 		return
 	fi
 
+	# Different editions use different Chromium branches
+	local branch_prefix=flintchina_
+	if use flintos_editions_uk_customer || use flintos_editions_dev_intl; then
+		branch_prefix=flint_
+	fi
+
 	# Digest version information from ebuild PN.
 	# The $PV could be in three possible formats:
 	#   * 9999.a.b.c.d.e.f - a.b.c.d is a Chrome version, e.f is a Flint OS version. This type of PV means it's a Flint customized version.
-	#                        It is for building from flint_release_r$a.$b.$c.$d_v$e.$f for public releases.
+	#                        It is for building from ${branch_prefix}release_r$a.$b.$c.$d_v$e.$f for public releases.
 	#   * 9999.a           - a is a Chrome major release number. This type of PV means it's a Flint customized version also.
-	#                        It is for building HEAD of flint_master_r$a branch in development phase.
+	#                        It is for building HEAD of ${branch_prefix}master_r$a branch in development phase.
 	#   * a.b.c.d          - this type of PV means it is a vanilla version. In such case this function only helps to build from the local source.
 	local ver_array=(${PV//./ })
 	if [[ ${ver_array[0]} != "9999" ]]; then # Above situation #3
 		local CR_VERSION=${ver_array[0]}.${ver_array[1]}.${ver_array[2]}.${ver_array[3]}
 	elif [[ ${#ver_array[@]} == 2 ]]; then   # Above situation #2
-		local CR_BRANCH=flint_master_r
+		local CR_BRANCH=${branch_prefix}master_r
 		local CR_VERSION=${ver_array[1]}
 	elif [[ ${#ver_array[@]} == 7 ]]; then   # Above situation #1
-		local CR_BRANCH=flint_release_r
+		local CR_BRANCH=${branch_prefix}release_r
 		local CR_VERSION=${ver_array[1]}.${ver_array[2]}.${ver_array[3]}.${ver_array[4]}
 		local FLINT_VERSION=_v${ver_array[5]}.${ver_array[6]}
 	else
