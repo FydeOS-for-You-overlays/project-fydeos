@@ -17,10 +17,14 @@
 #>chromeos-base/update_engine-0.0.3-r2713
 
 # 63
->=chromeos-base/chromeos-chrome-9999.64
->chromeos-base/chromeos-installer-0.0.1-r2790
->chromeos-base/update_engine-0.0.3-r2822
-#
+#>=chromeos-base/chromeos-chrome-9999.64
+#>chromeos-base/chromeos-installer-0.0.1-r2790
+#>chromeos-base/update_engine-0.0.3-r2822
+
+# 64
+>=chromeos-base/chromeos-chrome-9999.65
+>chromeos-base/chromeos-installer-0.0.2-r2936
+>chromeos-base/update_engine-0.0.3-r2973
 
 # Unmask to build stock chrome in chromeos overlay
 #>chromeos-base/chromeos-chrome-9999
