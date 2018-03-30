@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=5
@@ -13,8 +13,6 @@ LICENSE="ISC"
 SLOT="0/23"
 KEYWORDS="amd64 arm arm64 x86"
 IUSE="+asm minimal static-libs +urandom cpu_flags_x86_sse4_1 cpu_flags_x86_aes"
-
-RESTRICT="mirror"
 
 PATCHES=( "${FILESDIR}"/${PN}-1.0.10-cpuflags.patch )
 

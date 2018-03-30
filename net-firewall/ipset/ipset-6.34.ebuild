@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5"
-MODULES_OPTIONAL_USE="modules"
+MODULES_OPTIONAL_USE=modules
 inherit linux-info linux-mod
 
 DESCRIPTION="IPset tool for iptables, successor to ippool"
@@ -36,6 +36,8 @@ pkg_setup() {
 	# It does still build without NET_NS, but it may be needed in future.
 	#CONFIG_CHECK="${CONFIG_CHECK} NET_NS"
 	#ERROR_NET_NS="ipset requires NET_NS (network namespace) support in your kernel."
+	CONFIG_CHECK+=" !PAX_CONSTIFY_PLUGIN"
+	ERROR_PAX_CONSTIFY_PLUGIN="ipset contains constified variables (#614896)"
 
 	build_modules=0
 	if use modules; then
@@ -86,6 +88,8 @@ src_install() {
 	default
 	prune_libtool_files
 
+	# newinitd "${FILESDIR}"/ipset.initd-r4 ${PN}
+	# newconfd "${FILESDIR}"/ipset.confd ${PN}
 	keepdir /var/lib/ipset
 
 	if [[ ${build_modules} -eq 1 ]]; then

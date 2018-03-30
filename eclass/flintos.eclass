@@ -46,7 +46,7 @@ flintos_set_update_server() {
 	[[ ! -e "${rel}" ]] && die "/etc/flintos-release file missing. Run flintos_set_edition first."
 
 	cat <<-EOF >> "${rel}"
-	FLINTOS_AUSERVER=https://up.flintos.xyz/service/update2
+	FLINTOS_AUSERVER=https://up.fydeos.xyz/service/update2
 	EOF
 }
 
