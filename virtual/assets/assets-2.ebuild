@@ -11,4 +11,4 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="chromeos-base/flintos-assets"
+RDEPEND="chromeos-base/fydeos-assets"

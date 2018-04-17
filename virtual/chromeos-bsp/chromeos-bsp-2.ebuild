@@ -4,25 +4,23 @@
 EAPI="4"
 
 DESCRIPTION="A typical non-generic implementation will install any board-specific configuration files and drivers which are not suitable for inclusion in a generic board overlay."
-HOMEPAGE="http://www.flintos.io"
+HOMEPAGE="http://fydeos.com"
 
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
-IUSE="flint_policy flint_daemon shadowsocks"
+IUSE="tpm-emulator"
 
 RDEPEND="
 	!chromeos-base/chromeos-bsp-null
-	sys-kernel/linux-firmware
-	chromeos-base/flintos-arch-spec
-	chromeos-base/flintos-chip-spec
-	chromeos-base/flintos-board-spec
-	chromeos-base/flintos-variant-spec
-	chromeos-base/flintos-release
+	virtual/fydeos-arch-spec
+	virtual/fydeos-chip-spec
+	virtual/fydeos-board-spec
+	virtual/fydeos-variant-spec
+	chromeos-base/fydeos-assets
 	chromeos-base/vpd-info-append
-	flint_policy? ( chromeos-base/flintos-group-policy )
-	flint_daemon? ( net-misc/flint_daemon )
-	shadowsocks? ( net-proxy/shadowsocks-libev )
+    chromeos-base/fydeos-default-apps
+    tpm-emulator? ( app-crypt/tpm-emulator )
 "
 DEPEND="
 	${RDEPEND}

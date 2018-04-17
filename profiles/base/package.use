@@ -1,2 +1,0 @@
-net-firewall/ipset -modules
-sys-apps/gptfdisk -ncurses
