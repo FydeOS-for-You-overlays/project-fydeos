@@ -1,5 +1,7 @@
 {
     "ExtensionInstallForcelist": [
-        "mofiofjpikncjaigmdlblhojbnkabako;https://store.fydeos.xyz/update/mofiofjpikncjaigmdlblhojbnkabako/updates.xml"
+        "mofiofjpikncjaigmdlblhojbnkabako;https://store.fydeos.com/update/mofiofjpikncjaigmdlblhojbnkabako/updates.xml",
+        "ippaepgemoiegikkaldabhofepmecflm;https://store.fydeos.com/update/ippaepgemoiegikkaldabhofepmecflm/updates.xml",
+        "hidnajblbifdkmheebalalchohohmaef;https://store.fydeos.com/update/hidnajblbifdkmheebalalchohohmaef/updates.xml"
     ]
 }
