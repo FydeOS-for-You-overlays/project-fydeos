@@ -17,8 +17,9 @@ RDEPEND="
 	virtual/fydeos-chip-spec
 	virtual/fydeos-board-spec
 	virtual/fydeos-variant-spec
+    virtual/fydeos-chromedev-flags
 	chromeos-base/fydeos-assets
-	chromeos-base/vpd-info-append
+    chromeos-base/fydeos-console-issue
     chromeos-base/fydeos-default-apps
     tpm-emulator? ( app-crypt/tpm-emulator )
 "

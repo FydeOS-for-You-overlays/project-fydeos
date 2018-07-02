@@ -11,9 +11,14 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="arc"
 S="${WORKDIR}"
+
 RDEPEND=""
 # virtual/arc-plus
 DEPEND="${RDEPEND}"
+
+src_compile() {
+  ${FILESDIR}/build_validations.sh
+}
 
 src_install(){
   insinto /mnt/stateful_partition/unencrypted/import_extensions
