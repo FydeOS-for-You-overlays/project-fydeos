@@ -12,6 +12,7 @@ KEYWORDS="*"
 IUSE="arc fydeos_store"
 S="${WORKDIR}"
 
+ARC_SETTING_ID="iakadpgajjigiaojnbdmodlngmbkfhag"
 FYDEOS_STORE_ID="hidnajblbifdkmheebalalchohohmaef"
 
 RDEPEND=""
@@ -20,6 +21,13 @@ DEPEND="${RDEPEND}"
 
 src_compile() {
   ${FILESDIR}/build_validations.sh
+  cp ${FILESDIR}/policy/fydeos.json .
+  if ! use fydeos_store; then
+    sed -i "/${FYDEOS_STORE_ID}/d" ./fydeos.json
+  fi
+  if ! use arc; then
+    sed -i "/${ARC_SETTING_ID}/d" ./fydeos.json
+  fi
 }
 
 src_install(){
@@ -37,6 +45,5 @@ src_install(){
   done
   use arc && doins ${FILESDIR}/arc-extensions/*.json
   insinto /etc/chromium/policies/managed
-  doins ${FILESDIR}/policy/fydeos.json
-  use arc && doins ${FILESDIR}/policy/arc.json
+  doins fydeos.json
 }
