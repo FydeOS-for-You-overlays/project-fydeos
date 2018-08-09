@@ -11,11 +11,6 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="
-    chromeos-base/fydeos_power_wash
-    virtual/fydeos-arch-spec-dev
-    virtual/fydeos-chip-spec-dev
-    virtual/fydeos-board-spec-dev
-"
+RDEPEND=""
 
 DEPEND="${RDEPEND}"

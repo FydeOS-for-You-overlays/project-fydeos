@@ -28,13 +28,22 @@ append_flags() {
 remove_flags() {
     local chrome_dev=$CHROME_TMP_CONFIG
     for flag in $@; do
-        cat $chrome_dev | sed "/${flag}/d" > $chrome_dev
+        sed -i "/${flag}/d" $chrome_dev
     done
 }
 
 append_flags_ui() {
-    sed "/^env CHROME_COMMAND_FLA/s/G.*/G=\"${CHROME_DEV_FLAGS}\"/g" $CHROME_TMP_UI > $CHROME_TMP_UI.tmp
-    cat ${CHROME_TMP_UI}.tmp > $CHROME_TMP_UI    
+    local origin_flags
+    if [ -f ${ROOT}/etc/init/${CHROME_TMP_UI} ]; then
+        origin_flags=$(grep -E "^env CHROME_COMMAND_FLAG=.*" ${ROOT}/etc/init/${CHROME_TMP_UI})
+        origin_flags=${origin_flags#*\"}
+        origin_flags=${origin_flags%\"*}
+    fi
+    if [ -n "$origin_flags" ]; then
+        sed -i "/^env CHROME_COMMAND_FLA/s/G.*/G=\"${CHROME_DEV_FLAGS} ${origin_flags}\"/g" $CHROME_TMP_UI
+    else
+        sed -i "/^env CHROME_COMMAND_FLA/s/G.*/G=\"${CHROME_DEV_FLAGS}\"/g" $CHROME_TMP_UI 
+    fi
 }
 
 src_compile() {
