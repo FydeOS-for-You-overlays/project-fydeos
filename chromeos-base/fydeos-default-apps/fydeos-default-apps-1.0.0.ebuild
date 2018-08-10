@@ -9,7 +9,7 @@ HOMEPAGE="http://www.flintos.io"
 LICENSE="BSD-Google"
 SLOT="0"
 KEYWORDS="*"
-IUSE="arc fydeos_store"
+IUSE="fydeos_arc fydeos_store"
 S="${WORKDIR}"
 
 ARC_SETTING_ID="iakadpgajjigiaojnbdmodlngmbkfhag"
@@ -25,7 +25,7 @@ src_compile() {
   if ! use fydeos_store; then
     sed -i "/${FYDEOS_STORE_ID}/d" ./fydeos.json
   fi
-  if ! use arc; then
+  if ! use fydeos_arc; then
     sed -i "/${ARC_SETTING_ID}/d" ./fydeos.json
   fi
 }
@@ -33,7 +33,7 @@ src_compile() {
 src_install(){
   insinto /mnt/stateful_partition/unencrypted/import_extensions
   doins ${FILESDIR}/extensions/*.crx
-  use arc && doins ${FILESDIR}/arc-extensions/*.crx
+  use fydeos_arc && doins ${FILESDIR}/arc-extensions/*.crx
   insinto /usr/share/import_extensions/validation
   doins ${FILESDIR}/validations/*
   insinto /usr/share/chromium/extensions
@@ -43,7 +43,7 @@ src_install(){
     fi
     doins $cnf
   done
-  use arc && doins ${FILESDIR}/arc-extensions/*.json
+  use fydeos_arc && doins ${FILESDIR}/arc-extensions/*.json
   insinto /etc/chromium/policies/managed
   doins fydeos.json
 }

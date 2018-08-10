@@ -9,13 +9,13 @@ HOMEPAGE="http://fydeos.com"
 LICENSE="BSD-Google"
 SLOT="0"
 KEYWORDS="*"
-IUSE="arc force-chinese"
+IUSE="fydeos_arc force-chinese"
 
 S=${WORKDIR}
 
 CHROME_DEV_FLAGS="--fydeos-account-enabled"
 
-if use arc ; then
+if use fydeos_arc ; then
   CHROME_DEV_FLAGS="${CHROME_DEV_FLAGS} --arc-start-mode=always-start-with-no-play-store"
 fi
 
