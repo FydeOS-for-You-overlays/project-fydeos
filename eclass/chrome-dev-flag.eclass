@@ -34,15 +34,18 @@ remove_flags() {
 
 append_flags_ui() {
     local origin_flags
+    local real_flags
     if [ -f ${ROOT}/etc/init/${CHROME_TMP_UI} ]; then
         origin_flags=$(grep -E "^env CHROME_COMMAND_FLAG=.*" ${ROOT}/etc/init/${CHROME_TMP_UI})
         origin_flags=${origin_flags#*\"}
         origin_flags=${origin_flags%\"*}
     fi
-    if [ -n "$origin_flags" ]; then
-        sed -i "/^env CHROME_COMMAND_FLA/s/G.*/G=\"${CHROME_DEV_FLAGS} ${origin_flags}\"/g" $CHROME_TMP_UI
-    else
-        sed -i "/^env CHROME_COMMAND_FLA/s/G.*/G=\"${CHROME_DEV_FLAGS}\"/g" $CHROME_TMP_UI 
+    for flag in ${CHROME_DEV_FLAGS}; do
+        [ -z "$(echo $origin_flags | grep $flag)" ] real_flags="${real_flags} ${flag}"
+    done
+    real_flags="${origin_flags}${real_flags}"    
+    if [ -n "$real_flags" ]; then
+        sed -i "/^env CHROME_COMMAND_FLA/s/G.*/G=\"${real_flags}\"/g" $CHROME_TMP_UI
     fi
 }
 
