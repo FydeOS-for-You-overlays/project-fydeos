@@ -41,7 +41,7 @@ append_flags_ui() {
         origin_flags=${origin_flags%\"*}
     fi
     for flag in ${CHROME_DEV_FLAGS}; do
-        [ -z "$(echo $origin_flags | grep $flag)" ] real_flags="${real_flags} ${flag}"
+        [ -z "$(echo $origin_flags | grep -e $flag)" ] && real_flags="${real_flags} ${flag}"
     done
     real_flags="${origin_flags}${real_flags}"    
     if [ -n "$real_flags" ]; then
