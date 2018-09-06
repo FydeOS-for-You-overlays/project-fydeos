@@ -21,6 +21,7 @@ RDEPEND="
 	chromeos-base/fydeos-assets
     chromeos-base/fydeos-console-issue
     chromeos-base/fydeos-default-apps
+    net-misc/patch-tlsdate
     tpm-emulator? ( app-crypt/tpm-emulator )
 "
 DEPEND="
