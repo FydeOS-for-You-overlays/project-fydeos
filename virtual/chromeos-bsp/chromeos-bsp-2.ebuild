@@ -22,6 +22,7 @@ RDEPEND="
     chromeos-base/fydeos-console-issue
     chromeos-base/fydeos-default-apps
     net-misc/patch-tlsdate
+    app-i18n/google-ime-tools
     tpm-emulator? ( app-crypt/tpm-emulator )
 "
 DEPEND="
