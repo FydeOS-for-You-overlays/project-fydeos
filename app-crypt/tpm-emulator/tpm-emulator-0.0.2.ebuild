@@ -40,7 +40,7 @@ src_compile() {
 
 	# This kernel header file is required to build the kernel module but not included in the source, copy it
 	# from the kernel source tree we build against.
-	cp ${KV_DIR}/drivers/char/tpm/tpm.h ${S}/tpmd_dev/linux/tpm.h
+	cp ${KV_OUT_DIR}/drivers/char/tpm/tpm.h ${S}/tpmd_dev/linux/tpm.h
 
 	cmake-utils_src_compile
 	# This would be normally done in kernel module build, but we have

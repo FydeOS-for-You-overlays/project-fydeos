@@ -28,7 +28,7 @@ BOARD_USE_PREFIX="board_use_"
 # they won't be accidentally recycled in the future.
 ALL_BOARDS=(
     amd64-fydeos
-    hana-fydeos
+    hana_fydeos
     amd64-spin
     amd64-macair
     tatl-fydeos
