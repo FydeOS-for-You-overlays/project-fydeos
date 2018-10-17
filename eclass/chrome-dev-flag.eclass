@@ -2,9 +2,9 @@
 RDEPEND="chromeos-base/chromeos-login"
 DEPEND="${RDEPEND}"
 #the flags need be added"
-CHROME_DEV_FLAGS=""
+#CHROME_DEV_FLAGS=""
 #the flags need be removed"
-CHROME_REMOVE_FLAGS=""
+#CHROME_REMOVE_FLAGS=""
 CHROME_TMP_CONFIG="chrome_dev.conf"
 CHROME_TMP_UI="ui.override"
 
@@ -19,7 +19,7 @@ check_file() {
 append_flags() {
     local chrome_dev=$CHROME_TMP_CONFIG
     for flag in $@; do
-      if [ -z `grep -e $flag $chrome_dev` ]; then
+      if [ -z "`grep -e $flag $chrome_dev`" ]; then
         echo $flag >> $chrome_dev
       fi
     done  
