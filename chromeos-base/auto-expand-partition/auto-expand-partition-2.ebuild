@@ -1,6 +1,4 @@
-EAPI=4
-
-inherit udev
+EAPI=5
 
 DESCRIPTION="Auto expand stateful partition on first boot"
 
@@ -18,6 +16,8 @@ S=${WORKDIR}
 
 src_install() {
 	# Install upstart service
+        exeinto "/usr/sbin"
+        doexe ${FILESDIR}/expand-partition.sh	
 	insinto "/etc/init"
 	doins ${FILESDIR}/auto-expand-partition.conf
 }
