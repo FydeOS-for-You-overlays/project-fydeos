@@ -1,4 +1,4 @@
-FYDEBASE_URI="ftp://ftp:ftp@gitlab.fydeos.xyz/${PN}"
+FYDEBASE_URI="ftp://ftp:ftp@flintboy/${PN}"
 AMD64_URI="${FYDEBASE_URI}/${PN}-amd64-${PV}.tar.gz"
 ARM_URI="${FYDEBASE_URI}/${PN}-arm-${PV}.tar.gz"
 
