@@ -20,6 +20,7 @@ RDEPEND="
   dev-lang/python
   dev-libs/dbus-glib
   dev-python/dbus-python
+  dev-python/pygobject
   "
 
 DEPEND="${RDEPEND}"
