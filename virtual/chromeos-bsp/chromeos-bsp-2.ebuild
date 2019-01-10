@@ -24,6 +24,7 @@ RDEPEND="
     net-misc/patch-tlsdate
     app-i18n/google-ime-tools
     chromeos-base/fydeos-shell-daemon
+	net-misc/fydeos-remote-help
     tpm-emulator? ( app-crypt/tpm-emulator )
 "
 DEPEND="
