@@ -15,7 +15,7 @@ print_usage() {
 parse_disk_dev() {
     local disk=$1
     local disk=$(echo $1 | sed 's/[0-9_]*$//')
-    if [ -n "$(echo $disk | grep mmcblk)" ]; then
+    if [ -z "$(echo $disk | grep '/sd')" ]; then
         disk=${disk%p}
     fi
     echo $disk
