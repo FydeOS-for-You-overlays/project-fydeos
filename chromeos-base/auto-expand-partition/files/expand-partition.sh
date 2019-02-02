@@ -52,16 +52,16 @@ expand_partition() {
   last_sec=$(($last_byte / 512))
   echo "Check disk:$disk partition table..."
   sgdisk -e $disk
-  echo "Down"
+  echo "Done"
   echo "Modify partition $partnum..."
   cgpt add -i $partnum -s $(($last_sec - $start_sec - 10240)) $disk
-  echo "Down"
+  echo "Done"
   echo "Notify kernel..."
   partx -u $part
-  echo "Down"
+  echo "Done"
   echo "Resize filesystem on partition..."
   resize2fs $part
-  echo "Down"
+  echo "Done"
 }
 
 target_partition=""
