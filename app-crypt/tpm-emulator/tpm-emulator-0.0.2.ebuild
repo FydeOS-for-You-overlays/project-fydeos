@@ -5,7 +5,7 @@
 EAPI="5"
 
 EGIT_REPO_URI="git@gitlab.fydeos.xyz:misc/tpm-emulator.git"
-EGIT_BRANCH="master"
+EGIT_BRANCH="github_master"
 #EGIT_COMMIT="268acb688c41643175bc244decd5bb6fa288c38f"
 
 inherit cmake-utils git-2 toolchain-funcs linux-info linux-mod
@@ -77,4 +77,6 @@ src_install() {
 	insinto /etc/init
 	doins etc/init/tpm-emulator.conf
 	doins etc/init/tpm-probe.override
+    insinto /usr/share/cros/init
+    doins ${FILESDIR}/tcsd-pre-start.sh
 }
