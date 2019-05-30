@@ -1,13 +1,13 @@
 # Copyright (c) 2018 The Fyde OS Authors. All rights reserved.
 # Distributed under the terms of the BSD
 
-EAPI="5"
+EAPI="6"
 
-inherit git-2
 
 EGIT_REPO_URI="git@gitlab.fydeos.xyz:cockpit/fydeos-shell-daemon.git"
 EGIT_BRANCH="master"
 
+inherit git-r3
 DESCRIPTION="fydeos shell daemon"
 HOMEPAGE="http://fydeos.com"
 

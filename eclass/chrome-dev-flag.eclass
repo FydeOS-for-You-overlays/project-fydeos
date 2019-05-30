@@ -55,6 +55,9 @@ src_compile() {
     cat ${ROOT}/etc/chrome_dev.conf > $CHROME_TMP_CONFIG
     cat ${ROOT}/etc/init/ui.conf > $CHROME_TMP_UI
     if [ -n "$CHROME_DEV_FLAGS" ]; then
+      if use force-chinese; then
+         CHROME_DEV_FLAGS="${CHROME_DEV_FLAGS} --lang=zh-CN LANGUAGE=zh-CN"
+      fi
       einfo "append flags: ${CHROME_DEV_FLAGS}"
       append_flags $CHROME_DEV_FLAGS
       append_flags_ui

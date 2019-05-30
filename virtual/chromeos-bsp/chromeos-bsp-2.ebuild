@@ -27,6 +27,7 @@ RDEPEND="
 	net-misc/fydeos-remote-help
     tpm-emulator? ( app-crypt/tpm-emulator )
     chromeos-base/vpd-info-append
+    chromeos-base/fydeos-dev-remote-patch
 "
 DEPEND="
 	${RDEPEND}
