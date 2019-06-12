@@ -9,7 +9,7 @@ HOMEPAGE="http://fydeos.com"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
-IUSE="tpm-emulator"
+IUSE=""
 
 RDEPEND="
 	!chromeos-base/chromeos-bsp-null
@@ -25,7 +25,6 @@ RDEPEND="
     app-i18n/google-ime-tools
     chromeos-base/fydeos-shell-daemon
 	net-misc/fydeos-remote-help
-    tpm-emulator? ( app-crypt/tpm-emulator )
     chromeos-base/vpd-info-append
     chromeos-base/fydeos-dev-remote-patch
 "
