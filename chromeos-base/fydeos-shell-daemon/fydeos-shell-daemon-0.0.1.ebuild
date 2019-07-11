@@ -40,4 +40,6 @@ src_install() {
   doins init/fydeos-shell-daemon.conf
   insinto /etc/dbus-1/system.d
   doins dbus/io.fydeos.ShellDaemon.conf
+  exeinto /usr/share/fydeos_shell
+  doexe script/*
 }
