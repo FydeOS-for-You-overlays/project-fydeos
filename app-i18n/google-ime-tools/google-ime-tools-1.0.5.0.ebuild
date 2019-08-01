@@ -20,4 +20,6 @@ DEPEND="${RDEPEND}"
 src_install() {
     insinto /usr/share/chromeos-assets/input_methods
     doins -r *
+    insinto /usr/share/chromeos-assets/input_methods/input_tools
+    doins ${FILESDIR}/engine.config
 }
