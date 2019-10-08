@@ -27,16 +27,24 @@ BOARD_USE_PREFIX="board_use_"
 # Obsolete boards' names are commented-out but retained in this list so
 # they won't be accidentally recycled in the future.
 ALL_BOARDS=(
-    amd64-fydeos
-    amd64-vmware
-    rpi3
-    hana_fydeos
-    amd64-spin
-    amd64-macair
-    tatl-fydeos
-    samus-fydeos
 	acorn
 	amd64-corei7
+	amd64-vmware
+	amd64-generic_vmware
+	prowise-ops
+  jerry-fydeos
+	leadpie-ip3
+	itnt-x
+	surface-pro3
+	itnt-72-go
+  itnt-72
+	surface-go
+	surface-pro4
+  u500-box
+	fizz-fydeos
+	amd64-qemu
+	tatl-fydeos
+	amd64-fydeos
 	#amd64-drm
 	amd64-generic
 	amd64-generic-cheets
@@ -56,6 +64,7 @@ ALL_BOARDS=(
 	arm64-llvmpipe
 	asuka
 	atlas
+	atlas-kvm
 	auron
 	auron_paine
 	auron_pearlvalley
@@ -69,6 +78,7 @@ ALL_BOARDS=(
 	beltino
 	betty
 	betty-arc64
+	betty-arcmaster
 	betty-arcnext
 	#bettyvirgl
 	blackwall
@@ -97,9 +107,12 @@ ALL_BOARDS=(
 	chell
 	chell-cheets
 	cheza
+	cheza-freedreno
+	cheza64
 	#chronos
 	cid
 	clapper
+	cmlrvp
 	cnlrvp
 	cobblepot
 	coral
@@ -119,6 +132,7 @@ ALL_BOARDS=(
 	danger
 	danger_embedded
 	#derwent
+	dragonegg
 	duck
 	edgar
 	elm
@@ -128,6 +142,7 @@ ALL_BOARDS=(
 	#envoy-jerry
 	eve
 	eve-arcnext
+	eve-arcvm
 	#eve-bertha
 	eve-campfire
 	eve-kvm
@@ -140,7 +155,9 @@ ALL_BOARDS=(
 	fb1
 	fizz
 	fizz-accelerator
+	fizz-labstation
 	fizz-moblab
+	flapjack
 	foster
 	#fox
 	#fox_baskingridge
@@ -164,45 +181,54 @@ ALL_BOARDS=(
 	guado_moblab
 	guado_labstation
 	hana
+	hatch
 	heli
 	hsb
+	iclrvp
 	ironhide
 	jadeite
 	#jaguar
 	jecht
-	kahlee
+	#kahlee
+	kalista
 	kayle
 	kblrvp
 	kefka
 	#kennet
 	kevin
+	kevin64
 	kevin-arcnext
 	#kevin-bertha
 	kevin-tpm2
+	kidd
 	#kiev
 	kip
 	klang
+	kukui
 	kunimitsu
 	lakitu
 	lakitu-gpu
-	lakitu-st
 	lakitu_mobbuild
 	lakitu-nc
 	lakitu_next
+	lakitu-slice
+	lakitu-st
+	lakitu-vca
 	lars
 	laser
 	lasilla-ground
-	lasilla-sky
+	#lasilla-sky
 	lassen
 	#lemmings
 	#lemmings_external
 	leon
 	link
+	littlejoe
 	loonix
 	lulu
 	lulu-cheets
 	lumpy
-	macchiato-ground
+	#macchiato-ground
 	mappy
 	#mappy-envoy
 	mappy_flashstation
@@ -217,17 +243,19 @@ ALL_BOARDS=(
 	mipsel-n32-generic
 	mipsel-n64-generic
 	mipsel-o32-generic
+	mistral
 	moblab-generic-vm
 	monroe
 	moose
 	nami
 	nautilus
 	nefario
-	newbie
+	#newbie
 	ninja
 	nocturne
 	novato
 	novato-arc64
+	novato-arcnext
 	nyan
 	nyan_big
 	nyan_blaze
@@ -269,6 +297,7 @@ ALL_BOARDS=(
 	quawks
 	rainier
 	rambi
+	rammus
 	raspberrypi
 	reef
 	relm
@@ -285,7 +314,9 @@ ALL_BOARDS=(
 	sama5d3
 	samus
 	samus-cheets
+	samus-kernelnext
 	sand
+	sarien
 	scarlet
 	scarlet-arcnext
 	sentry
@@ -349,12 +380,15 @@ ALL_BOARDS=(
 	veyron_speedy-cheets
 	veyron_thea
 	veyron_tiger
+	viking
 	#waluigi
 	whirlwind
+	whlrvp
 	winky
 	wizpig
 	wolf
 	wooten
+	wristpin
 	wsb
 	x30evb
 	x32-generic
