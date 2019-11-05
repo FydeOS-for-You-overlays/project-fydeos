@@ -18,6 +18,7 @@ readonly LOCAL_FYDEOS_LSB_RELEASE="/etc/lsb-release"
 readonly RUN_DIR="/run/stateful_update"
 # readonly RUN_DIR="./run"
 
+readonly UPDATE_PROGRESS_FILE="$RUN_DIR/progress"
 readonly UPDATE_STATE_FILE="$RUN_DIR/state"
 readonly CHECKING_STATE="checking"
 readonly UPGRADING_STATE="updating"
@@ -69,11 +70,16 @@ set_state() {
 }
 
 clean_state() {
-    rm "$UPDATE_STATE_FILE"
+    rm -f "$UPDATE_STATE_FILE"
+}
+
+clean_progress() {
+    rm -f "$UPDATE_PROGRESS_FILE"
 }
 
 clean_exit() {
     clean_state
+    clean_progress
     exit -1
 }
 
@@ -241,13 +247,28 @@ pre_update() {
 
 post_update() {
     clean_state
+    clean_progress
+}
+
+read_current_progress() {
+    if [[ -f "$UPDATE_PROGRESS_FILE" ]]; then
+        cat "$UPDATE_PROGRESS_FILE" | tail -n 1 | awk '{print $NF}'
+    fi
 }
 
 main() {
-    if [[ $# -eq 1 ]] && [[ $1 = "version" ]]; then
-        read_local_version
-        echo "$LOCAL_DETAIL_VERSION"
-        exit 0
+    if [[ $# -eq 1 ]]; then
+        if [[ $1 = "version" ]]; then
+            read_local_version
+            echo "$LOCAL_DETAIL_VERSION"
+            exit 0
+        elif [[ $1 = "progress" ]]; then
+            read_current_progress
+            exit 0
+        else
+            echo "invalid action"
+            exit -1
+        fi
     fi
     pre_update
 

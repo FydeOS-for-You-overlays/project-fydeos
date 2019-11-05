@@ -26,6 +26,7 @@ RESET_STATE="reset"
 LSB_RELEASE="/etc/lsb-release"
 STATEFUL_DIR="/mnt/stateful_partition"
 UPDATE_STATE_FILE=".update_available"
+UPDATE_PROGRESS_FILE="/run/stateful_update/progress"
 
 DEFINE_string stateful_change "${OLD_STATE}" \
   "The state of the new stateful partition - used in update testing."
@@ -40,8 +41,9 @@ remove_quotes() {
 }
 
 download_stateful_payload(){
+    mkdir -p "$(dirname "$UPDATE_PROGRESS_FILE")"
   # Download and unzip directories onto the stateful partition.
-  eval "curl -L --silent --max-time 300 \"${stateful_update_url}\"" |
+  eval "curl -L --progress-bar --max-time 600 \"${stateful_update_url}\" 2>\"${UPDATE_PROGRESS_FILE}\"" |
       tar --ignore-command-error --overwrite --directory=${STATEFUL_DIR} -xz
 }
 
