@@ -118,7 +118,9 @@ is_tatl_local_lower_than_remote_version() {
 }
 
 is_local_equal_remote_major_version() {
-    [[ "$OS_MAJOR_VERSION" = "$REMOTE_MAJOR_VERSION" ]]
+    local os_major_version="${OS_MAJOR_VERSION%.*}"
+    local remote_major_version="${REMOTE_MAJOR_VERSION%.*}"
+    [[ "$os_major_version" = "$remote_major_version" ]]
 }
 #==================== version comparison ====================#
 
