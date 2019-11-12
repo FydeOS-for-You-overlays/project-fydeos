@@ -103,11 +103,15 @@ verlt() {
 
 # compare local tatl major version and os major version
 is_tatl_higher_than_os_major_version() {
-    verlt "$OS_MAJOR_VERSION" "$TATL_MAJOR_VERSION"
+    local tatl_major_version="${TATL_MAJOR_VERSION%.*}"
+    local os_major_version="${OS_MAJOR_VERSION%.*}"
+    verlt "$os_major_version" "$tatl_major_version"
 }
 
 is_tatl_lower_than_os_major_version() {
-    verlt "$TATL_MAJOR_VERSION" "$OS_MAJOR_VERSION"
+    local tatl_major_version="${TATL_MAJOR_VERSION%.*}"
+    local os_major_version="${OS_MAJOR_VERSION%.*}"
+    verlt "$tatl_major_version" "$os_major_version"
 }
 
 # compare local detail version and remote detail version
