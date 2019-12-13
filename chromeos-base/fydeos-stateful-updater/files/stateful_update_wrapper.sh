@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly VERSION_URL="https://devserver.fydeos.com/stateful-update"
+readonly BASE_VERSION_URL="https://devserver.fydeos.com/stateful-update"
 readonly LOG_FILE="/var/log/tatl-update.log"
 
 readonly CURL_BIN="/usr/bin/curl"
@@ -9,6 +9,7 @@ readonly CURL="$CURL_BIN $CURL_PARAMS"
 
 readonly LOCAL_FYDEOS_BUILD_TYPE="CHROMEOS_RELEASE_BUILD_TYPE"
 readonly LOCAL_RELEASE_VERSION="CHROMEOS_RELEASE_VERSION"
+readonly LSB_RELEASE_BOARD="CHROMEOS_RELEASE_BOARD"
 
 readonly LOCAL_TATL_LSB_RELEASE="/mnt/stateful_partition/dev_image/tatl-fydeos/lsb-release"
 # readonly LOCAL_TATL_LSB_RELEASE="./lsb-release"
@@ -33,10 +34,12 @@ OS_MAJOR_VERSION=""
 TATL_MAJOR_VERSION=""
 LOCAL_DETAIL_VERSION=""
 
+OS_BOARDNAME=""
+
 REMOTE_MAJOR_VERSION=""
 REMOTE_DETAIL_VERSION=""
 # REMOTE_FILE_SIZE=""
-# REMOTE_FILE_URL=""
+REMOTE_FILE_URL=""
 # REMOTE_FILE_MD5SUM=""
 
 logger() {
@@ -128,6 +131,11 @@ is_local_equal_remote_major_version() {
 }
 #==================== version comparison ====================#
 
+read_os_boardname() {
+    local name=$(grep "$LSB_RELEASE_BOARD" "$LOCAL_FYDEOS_LSB_RELEASE" | awk -F '=' '{print $2}')
+    OS_BOARDNAME="$name"
+}
+
 ##################### read local version #####################
 read_local_detail_version() {
     grep "$LOCAL_RELEASE_VERSION" "$LOCAL_TATL_LSB_RELEASE" | awk -F '=' '{print $2}'
@@ -143,11 +151,11 @@ read_os_major_version() {
 
 read_local_version() {
     if [[ ! -f "$LOCAL_TATL_LSB_RELEASE" ]] || [[ ! -r "$LOCAL_TATL_LSB_RELEASE" ]]; then
-        logger "can't read file $LOCAL_LSB_RELEASE"
+        logger "can't read file $LOCAL_TATL_LSB_RELEASE"
         clean_exit
     fi
     if [[ ! -f "$LOCAL_FYDEOS_LSB_RELEASE" ]] || [[ ! -r "$LOCAL_FYDEOS_LSB_RELEASE" ]]; then
-        logger "can't read file $LOCAL_LSB_RELEASE"
+        logger "can't read file $LOCAL_FYDEOS_LSB_RELEASE"
         clean_exit
     fi
     os_major_version=$(read_os_major_version)
@@ -173,7 +181,8 @@ parse_json_field() {
 }
 
 curl_version_info() {
-    $CURL "$VERSION_URL" 2>>"$LOG_FILE"
+    local version_url="$1"
+    $CURL "$version_url" 2>>"$LOG_FILE"
 }
 
 parse_json() {
@@ -182,10 +191,10 @@ parse_json() {
     # size=$(parse_json_field "$json" "size")
     # md5sum=$(parse_json_field "$json" "md5sum")
     version=$(parse_json_field "$json" "version")
-    # download_url=$(parse_json_field "$json" "download_url")
+    download_url=$(parse_json_field "$json" "download_url")
 
     # if is_empty "$size" || is_empty "$md5sum" || is_empty "$version" || is_empty "$download_url"; then
-    if is_empty "$version" || is_empty "$major_version"; then
+    if is_empty "$version" || is_empty "$major_version" || is_empty "$download_url"; then
         logger "parse version info failed"
         clean_exit
     fi
@@ -193,14 +202,17 @@ parse_json() {
     REMOTE_MAJOR_VERSION="$(echo "$major_version" | tr -d 'v')"
     # REMOTE_FILE_MD5SUM="$md5sum"
     # REMOTE_FILE_SIZE="$size"
-    # REMOTE_FILE_URL="$download_url"
+    REMOTE_FILE_URL="$download_url"
 }
 
 fetch_version_info() {
     set_state "$CHECKING_STATE"
     print_progress "$CHECKING_STATE"
     logger "fetching version info..."
-    version_info=$(curl_version_info)
+    local os_major_version="${OS_MAJOR_VERSION%.*}"
+    local version_url="$BASE_VERSION_URL/${OS_BOARDNAME}/${os_major_version}/version"
+    echo "version_url: $version_url"
+    version_info=$(curl_version_info $version_url)
     if is_empty "$version_info"; then
         logger "fetch version info failed"
         clean_exit
@@ -212,6 +224,7 @@ fetch_version_info() {
 #==================== fetch version info ====================#
 
 upgrade() {
+    export FYDEOS_STATEFUL_UPDATE_URL="$REMOTE_FILE_URL"
     if sh "$STATEFUL_UPDATE_SCRIPT"; then
         set_reboot_required
     fi
@@ -278,8 +291,9 @@ main() {
     fi
     pre_update
 
-    fetch_version_info
     read_local_version
+    read_os_boardname
+    fetch_version_info
     do_update
 
     post_update

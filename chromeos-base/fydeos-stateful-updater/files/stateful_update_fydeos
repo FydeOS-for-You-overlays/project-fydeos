@@ -75,8 +75,11 @@ update_dev_image () {
     base_update_url=${path}
   fi
 
-  if [ -n "${base_update_url}" ]; then
+  if [ -n "${base_update_url}" ] || [ -n "${FYDEOS_STATEFUL_UPDATE_URL}" ]; then
     local stateful_update_url="${base_update_url}/stateful.tgz"
+    if [ -n "$FYDEOS_STATEFUL_UPDATE_URL" ]; then
+        stateful_update_url="$FYDEOS_STATEFUL_UPDATE_URL"
+    fi
     local download_exit_code=0
     for i in `seq 1 2`; do
       if [ $i -eq 1 ]; then
