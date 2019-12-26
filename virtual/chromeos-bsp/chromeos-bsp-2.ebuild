@@ -24,7 +24,6 @@ RDEPEND="
     app-i18n/google-ime-tools
     chromeos-base/fydeos-shell-daemon
 	net-misc/fydeos-remote-help
-    chromeos-base/vpd-info-append
     chromeos-base/fydeos-dev-remote-patch
     chromeos-base/fydeos-stateful-updater
 "
