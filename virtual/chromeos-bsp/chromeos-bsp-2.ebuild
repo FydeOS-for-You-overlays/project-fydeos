@@ -22,7 +22,7 @@ RDEPEND="
     chromeos-base/fydeos-default-apps
     net-misc/patch-tlsdate
     app-i18n/google-ime-tools
-    chromeos-base/fydeos-shell-daemon
+    chromeos-base/fydeos-shell-daemon-go
 	net-misc/fydeos-remote-help
     chromeos-base/fydeos-dev-remote-patch
     chromeos-base/fydeos-stateful-updater
