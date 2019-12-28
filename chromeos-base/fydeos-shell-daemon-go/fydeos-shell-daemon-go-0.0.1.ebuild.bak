@@ -7,7 +7,7 @@ EAPI="6"
 EGIT_REPO_URI="git@gitlab.fydeos.xyz:cockpit/fydeos-shell-daemon-go.git"
 EGIT_BRANCH="master"
 
-inherit git-r3 golang-build
+inherit git-r3
 DESCRIPTION="fydeos shell daemon in golang, the replacement of python version"
 HOMEPAGE="http://fydeos.com"
 
@@ -22,17 +22,22 @@ RDEPEND="
 
 DEPEND="${RDEPEND}
   dev-lang/go
-  dev-go/dbus
 "
 
-EGO_PN="fydeos.com/shell_daemon"
-
+get_go_arch() {
+  if use arm; then
+    echo arm
+  elif use amd64; then
+    echo amd64
+  fi
+}
 
 src_compile() {
-   GOARCH=$ARCH golang-build_src_compile
-}
-get_golibdir() {
-  echo "/usr/lib/gopath"  
+  einfo "go arch:" $(get_go_arch)
+  einfo Enter $S
+  pushd $S
+  GOARCH=$(get_go_arch) GO111MODULE=on go build 
+  popd
 }
 
 src_install() {
