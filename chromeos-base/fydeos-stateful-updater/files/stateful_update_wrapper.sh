@@ -177,7 +177,7 @@ read_local_version() {
 parse_json_field() {
     local json="$1"
     local key="$2"
-    echo "$json" | python -c "import sys, json; print json.load(sys.stdin)['${key}']" 2>>"$LOG_FILE"
+    echo "$json" | python -c "import sys, json; print(json.load(sys.stdin)['${key}'])" 2>>"$LOG_FILE"
 }
 
 curl_version_info() {
