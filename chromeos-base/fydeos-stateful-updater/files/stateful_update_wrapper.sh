@@ -177,7 +177,8 @@ read_local_version() {
 parse_json_field() {
     local json="$1"
     local key="$2"
-    echo "$json" | python -c "import sys, json; print(json.load(sys.stdin)['${key}'])" 2>>"$LOG_FILE"
+    # echo "$json" | python -c "import sys, json; print(json.load(sys.stdin)['${key}'])" 2>>"$LOG_FILE"
+    echo "$json" | sed 's/,/\n/g' | grep -w "$key" | awk -F '"' '{print $4}'
 }
 
 curl_version_info() {
@@ -218,7 +219,7 @@ fetch_version_info() {
         clean_exit
     fi
 
-    logger "fetch version info\n$(echo "$version_info" | python -m json.tool)"
+    logger "fetch version info\n$version_info"
     parse_json "$version_info"
 }
 #==================== fetch version info ====================#
