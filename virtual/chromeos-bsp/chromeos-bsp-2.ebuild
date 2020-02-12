@@ -26,6 +26,7 @@ RDEPEND="
 	net-misc/fydeos-remote-help
     chromeos-base/fydeos-dev-remote-patch
     chromeos-base/fydeos-stateful-updater
+    chromeos-base/fydeos_power_wash
 "
 DEPEND="
 	${RDEPEND}
