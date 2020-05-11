@@ -27,6 +27,7 @@ RDEPEND="
     chromeos-base/fydeos-dev-remote-patch
     chromeos-base/fydeos-stateful-updater
     chromeos-base/fydeos_power_wash
+    chromeos-base/license-utils
 "
 DEPEND="
 	${RDEPEND}
