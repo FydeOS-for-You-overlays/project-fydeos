@@ -12,7 +12,6 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="
-  dev-python/pythonexe-stub
   virtual/fydeos-board-spec-test
 "
 
