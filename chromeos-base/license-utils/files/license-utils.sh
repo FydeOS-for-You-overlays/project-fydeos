@@ -30,21 +30,56 @@ get_fix_devices() {
   sort -r
 }
 
-get_device_serial() {
+get_device_serial_by_lsblk() {
   lsblk -d $1 -o SERIAL -n  
+}
+
+get_disk_serial_by_hdparm() {
+  hdparm -i $1 2>/dev/null | grep SerialNo | sed 's/.*SerialNo=\(.*\)/\1/'
 }
 
 get_disk_uuid() {
   fdisk -l $1 2>/dev/null | grep "Disk identifier:" | sed 's/^.*:\s//'
 }
 
+get_device_mac() {
+  local mac=""
+  local -r lan_mac_node="/sys/class/net/eth0/address"
+  local -r wlan_mac_node="/sys/class/net/wlan0/address"
+
+  if [[ -e "$lan_mac_node" ]]; then
+    mac=$(cat "$lan_mac_node")
+  elif [[ -e "$wlan_mac_node" ]]; then
+    mac=$(cat "$wlan_mac_node")
+  else
+    mac=$(ifconfig -a | grep ether | head -n1 | awk '{print $2}')
+  fi
+
+  if [[ -n "$mac" ]]; then
+    mac=$(echo "$mac" | tr -d ':')
+  fi
+
+  echo "$mac"
+}
+
 get_device_id() {
   local device=$1
-  local id=$(get_device_serial $device)
+  local id=$(get_device_serial_by_lsblk $device)
+  local method="lsblk"
+  if [ -z "$id" ]; then
+    id=$(get_disk_serial_by_hdparm $device)
+    method="hdparm"
+  fi
+  if [ -z "$id" ]; then
+    id=$(get_device_mac)
+    method="mac_address"
+  fi
   if [ -z "$id" ]; then
     id=$(get_disk_uuid $device)
+    method="disk_uuid"
   fi
-  echo $id  
+  logger -p "user.info" "fydeos-license-utils get device id by $method"
+  echo $id
 }
 
 get_fix_id() {
