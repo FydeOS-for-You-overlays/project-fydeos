@@ -8,6 +8,7 @@ EXPIRE_DATE=expire_date
 LICENSE_TYPE=license_type
 SERIAL_NUMBER=serial_number
 LICENSE=license
+SCRIP_NAME="fydeos-license-utils"
 
 license_readable_attrs=(
   $LICENSE_ID
@@ -64,33 +65,55 @@ get_device_mac() {
 
 get_device_id() {
   local device=$1
-  local id=$(get_device_serial_by_lsblk $device)
   local method="lsblk"
+  local id=$(get_device_serial_by_lsblk $device)
   if [ -z "$id" ]; then
     id=$(get_disk_serial_by_hdparm $device)
     method="hdparm"
   fi
-  if [ -z "$id" ]; then
-    id=$(get_device_mac)
-    method="mac_address"
-  fi
-  if [ -z "$id" ]; then
-    id=$(get_disk_uuid $device)
-    method="disk_uuid"
-  fi
-  logger -p "user.info" "fydeos-license-utils get device id by $method"
+  logger -p "user.info" "$SCRIP_NAME get disk serial by $method"
   echo $id
+}
+
+try_get_device_id() {
+  local id=""
+  for device in $(get_fix_devices); do
+    id=$(get_device_id $device)
+    if [ -n "$id" ]; then
+      echo $id
+      return
+    fi
+  done
+}
+
+try_get_device_uuid() {
+  local id=""
+  for device in $(get_fix_devices); do
+    id=$(get_disk_uuid $device)
+    if [ -n "$id" ]; then
+      echo $id
+      return
+    fi
+  done
 }
 
 get_fix_id() {
   local id=""
-  for device in $(get_fix_devices); do
-      id=$(get_device_id $device)
-      if [ -n "$id" ]; then
-        echo $id
-        return
-      fi
-  done
+  id=$(try_get_device_id)
+  local method="disk serial"
+  if [ -z "$id" ]; then
+    id=$(get_device_mac)
+    method="mac address"
+  fi
+  if [ -z "$id" ]; then
+    id=$(try_get_device_uuid)
+    method="disk uuid"
+  fi
+  if [ -n "$id" ]; then
+    echo $id
+    logger -p "user.info" "$SCRIP_NAME get fix id by $method"
+    return
+  fi
   exit 1
 }
 
