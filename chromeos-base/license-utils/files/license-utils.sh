@@ -24,11 +24,20 @@ license_writable_attrs=(
 )
 
 get_fix_devices() {
- lsblk -d -p -o NAME,TRAN,SUBSYSTEMS 2>/dev/null | \
+ local devices=$(lsblk -d -p -o NAME,TRAN,SUBSYSTEMS 2>/dev/null | \
   grep -i "\<nvme\> \| \<sata\> \| \<mmc" | \
   grep -v usb | \
   sed 's/\s.*$//' | \
-  sort -r
+  sort -r)
+ if [ -z "$devices" ]; then
+   lsblk -d -p -o NAME,TRAN,SUBSYSTEMS 2>/dev/null | \
+    grep -i ":nvme:\|:sata:\|:mmc:" | \
+    grep -v usb | \
+    sed 's/\s.*$//' | \
+    sort
+ else
+   echo $devices
+ fi
 }
 
 get_device_serial_by_lsblk() {
@@ -71,7 +80,9 @@ get_device_id() {
     id=$(get_disk_serial_by_hdparm $device)
     method="hdparm"
   fi
-  logger -p "user.info" "$SCRIP_NAME get disk serial by $method"
+  if [ -n "$id" ]; then
+    logger -p "user.info" "$SCRIP_NAME get disk $device serial by $method"
+  fi
   echo $id
 }
 
