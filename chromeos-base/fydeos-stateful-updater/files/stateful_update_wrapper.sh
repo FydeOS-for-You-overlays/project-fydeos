@@ -59,7 +59,7 @@ is_empty() {
 }
 
 print_progress() {
-  if [[ "$JUST_CHECK" == "true" ]]; then
+  if [[ "$JUST_CHECK" = "true" ]]; then
     return
   fi
   local progress="$1"
@@ -67,7 +67,7 @@ print_progress() {
 }
 
 print_info() {
-  if [[ "$JUST_CHECK" == "true" ]]; then
+  if [[ "$JUST_CHECK" = "true" ]]; then
     return
   fi
   echo "$1"
@@ -270,6 +270,10 @@ pre_update() {
   mkdir -p "$(dirname "$UPDATE_STATE_FILE")"
   if [[ -f "$RESULT_FILE" ]]; then
     if [[ $(cat "$RESULT_FILE") = "$REBOOT_ACTION_REQUIRED" ]]; then
+      if [[ "$JUST_CHECK" = "true" ]]; then
+        echo "$REBOOT_ACTION_REQUIRED"
+        exit 0
+      fi
       echo "reboot required"
       exit -1
     else
