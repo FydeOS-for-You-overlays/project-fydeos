@@ -255,9 +255,14 @@ do_update() {
     fi
     print_progress "$UPGRADING_STATE"
     upgrade
+    return
   else
     set_state "$NO_ACTION_STATE"
     print_progress "latest_no_action"
+  fi
+
+  if [[ "$JUST_CHECK" = "true" ]]; then
+    echo "no_update"
   fi
 }
 
