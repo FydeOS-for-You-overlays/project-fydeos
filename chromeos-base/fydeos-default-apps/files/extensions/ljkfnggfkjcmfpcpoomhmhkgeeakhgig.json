@@ -1,0 +1,9 @@
+{
+ "external_update_url": "https://store.fydeos.com/update/ljkfnggfkjcmfpcpoomhmhkgeeakhgig/updates.xml",
+ "name": "FydeOS Remoting",
+ "user_type": [
+   "unmanaged",
+   "managed",
+   "child"
+ ]
+}
