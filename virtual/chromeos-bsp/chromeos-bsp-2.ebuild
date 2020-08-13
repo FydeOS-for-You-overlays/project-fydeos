@@ -28,6 +28,7 @@ RDEPEND="
     chromeos-base/fydeos-stateful-updater
     chromeos-base/fydeos_power_wash
     chromeos-base/license-utils
+    chromeos-base/google-drive-fs
 "
 DEPEND="
 	${RDEPEND}
